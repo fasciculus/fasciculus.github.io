@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EmbeddedResource Class | Fasciculus</title>
+    <title>FileOverwriteMode Enum | Fasciculus</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/fasciculus.css" />
 </head>
@@ -99,7 +99,7 @@
 </li>
 
         <li>
-        <details >
+        <details open>
             <summary>Fasciculus.IO</summary>
             <ul>
                 <li><a href="/api/Combined/Fasciculus.IO/">Overview</a></li>
@@ -161,7 +161,7 @@
 </li>
 
         <li>
-        <details open>
+        <details >
             <summary>Fasciculus.IO.Resources</summary>
             <ul>
                 <li><a href="/api/Combined/Fasciculus.IO.Resources/">Overview</a></li>
@@ -422,7 +422,7 @@
             <div class="col">
                 <main role="main" class="pb-3">
                     
-<h1>EmbeddedResource Class</h1>
+<h1>FileOverwriteMode Enum</h1>
 
 <h2>In this article</h2>
 
@@ -439,10 +439,11 @@
     </p>
 
 
-<code>public class EmbeddedResource</code>
+<code>public enum FileOverwriteMode</code>
 
 <p>
- Represents an embedded resource.
+ Whether to overwrite a target file. Used with
+ <c>FileInfoExtensions.RequiresOverwrite(System.IO.FileInfo, System.DateTime, FileOverwriteMode)</c>
  </p>
 
 <h2 id="applies-to">Applies To</h2>

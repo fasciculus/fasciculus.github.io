@@ -103,6 +103,10 @@
 </li>
 
                     <li>
+        <a href="/api/Fasciculus.Core/Fasciculus.IO/FileOverwriteMode/">&emsp;FileOverwriteMode</a>
+</li>
+
+                    <li>
         <a href="/api/Fasciculus.Core/Fasciculus.IO/FileSystemInfoExtensions/">&emsp;FileSystemInfoExtensions</a>
 </li>
 
@@ -393,14 +397,14 @@
             <div class="col">
                 <main role="main" class="pb-3">
                     
-
 <h1>Fasciculus.IO Namespace</h1>
 
 <h2>In this article</h2>
 
 <ul>
     <li><a href="#definition">Definition</a></li>
-    <li><a href="#classes">Classes</a></li>
+        <li><a href="#enums">Enums</a></li>
+        <li><a href="#classes">Classes</a></li>
     <li><a href="#applies-to">Applies to</a></li>
 </ul>
 
@@ -414,65 +418,83 @@
 
 <p></p>
 
-<h2 id="classes">Classes</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Class</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/Binary/">Binary</a></td>
-            <td>
+    <h2 id="enums">Enums</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Enum</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td><a href="/api/Fasciculus.Core/Fasciculus.IO/FileOverwriteMode/">FileOverwriteMode</a></td>
+                    <td>
+ Whether to overwrite a target file. Used with
+ <c>FileInfoExtensions.RequiresOverwrite(System.IO.FileInfo, System.DateTime, FileOverwriteMode)</c>
+ </td>
+                </tr>
+        </tbody>
+    </table>
+    <h2 id="classes">Classes</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Class</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/Binary/">Binary</a></td>
+                <td>
  Read and write binary data from or to a stream.
  </td>
-        </tr>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/DirectoryInfoExtensions/">DirectoryInfoExtensions</a></td>
-            <td>
+            </tr>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/DirectoryInfoExtensions/">DirectoryInfoExtensions</a></td>
+                <td>
  Extensions for <c>DirectoryInfo</c>.
  </td>
-        </tr>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/Endian/">Endian</a></td>
-            <td>
+            </tr>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/Endian/">Endian</a></td>
+                <td>
  Converters to and from byte arrays for little-endian and big-endian.
  </td>
-        </tr>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/FileInfoExtensions/">FileInfoExtensions</a></td>
-            <td>
+            </tr>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/FileInfoExtensions/">FileInfoExtensions</a></td>
+                <td>
  Extensions for <c>FileInfo</c>.
  </td>
-        </tr>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/FileSystemInfoExtensions/">FileSystemInfoExtensions</a></td>
-            <td>
+            </tr>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/FileSystemInfoExtensions/">FileSystemInfoExtensions</a></td>
+                <td>
  Extensions for 
  </td>
-        </tr>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/SpecialDirectories/">SpecialDirectories</a></td>
-            <td>
+            </tr>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/SpecialDirectories/">SpecialDirectories</a></td>
+                <td>
  Special directories.
  </td>
-        </tr>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/SpecialPaths/">SpecialPaths</a></td>
-            <td>
+            </tr>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/SpecialPaths/">SpecialPaths</a></td>
+                <td>
  Special paths.
  </td>
-        </tr>
-        <tr>
-            <td><a href="/api/Fasciculus.Core/Fasciculus.IO/StreamExtensions/">StreamExtensions</a></td>
-            <td>
+            </tr>
+            <tr>
+                <td><a href="/api/Fasciculus.Core/Fasciculus.IO/StreamExtensions/">StreamExtensions</a></td>
+                <td>
  Extensions for <c>Stream</c>.
  </td>
-        </tr>
-    </tbody>
-</table>
+            </tr>
+        </tbody>
+    </table>
 
 <h2 id="applies-to">Applies To</h2>
 
