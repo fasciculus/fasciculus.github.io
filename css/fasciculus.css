@@ -1,4 +1,4 @@
-﻿html {
+html {
     font-size: .875rem;
 }
 
@@ -13,6 +13,22 @@ a[href^="//"]:after, a[href^="http://"]:after, a[href^="https://"]:after {
     left: 0.1rem;
 }
 
+c, code {
+    color: black;
+    background-color: #eee;
+}
+
+c {
+    padding-inline-start: 0.25em;
+    padding-inline-end: 0.25em;
+}
+
+code {
+    display: block;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
 .container {
     max-width: 100%;
 }
@@ -24,6 +40,9 @@ a[href^="//"]:after, a[href^="http://"]:after, a[href^="https://"]:after {
 div.fsc-navigation-forest {
     flex-grow: 0;
     flex-basis: content;
+    padding-right: 1rem;
+    margin-right: 1rem;
+    border-right: 1px solid #888;
 }
 
 .fsc-navigation-forest {
@@ -44,4 +63,13 @@ div.fsc-navigation-forest {
 
 .footer {
     padding-top: 1rem;
+}
+
+.fsc-frontmatter {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+.fsc-frontmatter td {
+    padding-right: 1rem;
 }
