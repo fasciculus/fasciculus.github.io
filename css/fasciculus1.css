@@ -7,10 +7,15 @@ a  {
 }
 
 a[href^="//"]:after, a[href^="http://"]:after, a[href^="https://"]:after {
-    content: url(/images/external.png);
+    content: url(/images/external2.png);
     position: relative;
     top: -0.25rem;
     left: 0.1rem;
+    margin-right: 0.125rem;
+}
+
+a.nav-link:after {
+    content: none;
 }
 
 c, code {
@@ -25,16 +30,38 @@ c {
 
 code {
     display: block;
-    padding: 0.5rem;
+    padding: 1rem;
     margin-bottom: 1rem;
+}
+
+pre {
+    margin-bottom: 0;
 }
 
 .container {
     max-width: 100%;
 }
 
+.fsc-logo {
+    width: 32px;
+    height: 32px;
+}
+
 .nav-link {
     font-size: 1.25rem;
+}
+
+.fsc-navbar {
+    width: 100%;
+}
+
+.fsc-navbar-left {
+    flex-shrink: 0;
+}
+
+.fsc-navbar-right {
+    flex-grow: 0;
+    flex-basis: content;
 }
 
 div.fsc-navigation-forest {
@@ -72,4 +99,57 @@ div.fsc-navigation-forest {
 
 .fsc-frontmatter td {
     padding-right: 1rem;
+}
+
+.fsc-typeinfo {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+.fsc-typeinfo td {
+    padding-right: 1rem;
+}
+
+.fsc-tododone {
+    padding-bottom: 4px;
+}
+
+.csharp {
+    background-color: #eee;
+    padding: 0.625rem;
+    margin-bottom: 1rem;
+}
+
+.xml {
+    background-color: #eee;
+    padding: 0.625rem;
+    margin-bottom: 1rem;
+}
+
+.comment {
+    color: #008000;
+}
+
+.keyword {
+    color: #0000ff;
+}
+
+.xmlDocTag {
+    color: #008000;
+}
+
+.xmlDocComment {
+    color: #008000;
+}
+
+.string {
+    color: #a31515;
+}
+
+.xmlDelimiter {
+    color: #008000;
+}
+
+.xmlName {
+    color: #008000;
 }
