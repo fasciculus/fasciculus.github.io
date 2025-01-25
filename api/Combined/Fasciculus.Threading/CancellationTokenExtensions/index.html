@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>XWalker Class | Fasciculus</title>
+    <title>CancellationTokenExtensions Class | Fasciculus</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/fasciculus1.css" />
 </head>
@@ -17,6 +17,7 @@
                         <li class="nav-item"><a class="nav-link" href="/blog/">Blog</a></li>
                         <li class="nav-item"><a class="nav-link" href="/api/">APIs</a></li>
                         <li class="nav-item"><a class="nav-link" href="/releases.html">Releases</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/licenses/">Licenses</a></li>
                     </ul>
                 </div>
                 <div class="col fsc-navbar-right">
@@ -337,6 +338,10 @@
 </li>
 
                     <li>
+        <a href="/api/Combined/Fasciculus.IO/SpecialDirectories/ProgramFiles.html">ProgramFiles</a>
+</li>
+
+                    <li>
         <a href="/api/Combined/Fasciculus.IO/SpecialDirectories/WorkingDirectory.html">WorkingDirectory</a>
 </li>
 
@@ -375,6 +380,10 @@
 
                     <li>
         <a href="/api/Combined/Fasciculus.IO/SpecialPaths/Personal.html">Personal</a>
+</li>
+
+                    <li>
+        <a href="/api/Combined/Fasciculus.IO/SpecialPaths/ProgramFiles.html">ProgramFiles</a>
 </li>
 
                     <li>
@@ -872,10 +881,14 @@
 </li>
 
         <li>
-        <details >
+        <details open>
             <summary>Fasciculus.Threading</summary>
             <ul>
                     <li><a href="/api/Combined/Fasciculus.Threading/">Overview</a></li>
+                    <li>
+        <a href="/api/Combined/Fasciculus.Threading/CancellationTokenExtensions/">&#x2003;CancellationTokenExtensions</a>
+</li>
+
                     <li>
         <a href="/api/Combined/Fasciculus.Threading/Tasks/">&#x2003;Tasks</a>
 </li>
@@ -914,16 +927,24 @@
 </li>
 
         <li>
-        <details open>
+        <details >
             <summary>Fasciculus.Xml</summary>
             <ul>
                     <li><a href="/api/Combined/Fasciculus.Xml/">Overview</a></li>
+                    <li>
+        <a href="/api/Combined/Fasciculus.Xml/IXVisitor/">&#x2003;IXVisitor</a>
+</li>
+
                     <li>
         <a href="/api/Combined/Fasciculus.Xml/XElementExtensions/">&#x2003;XElementExtensions</a>
 </li>
 
                     <li>
-        <a href="/api/Combined/Fasciculus.Xml/XWalker/">&#x2003;XWalker</a>
+        <a href="/api/Combined/Fasciculus.Xml/XObjectExtensions/">&#x2003;XObjectExtensions</a>
+</li>
+
+                    <li>
+        <a href="/api/Combined/Fasciculus.Xml/XVisitor/">&#x2003;XVisitor</a>
 </li>
 
             </ul>
@@ -937,11 +958,11 @@
                             <p>
             <a href="/api/Combined/">Combined</a>
                 <span>&nbsp;/&nbsp;</span>
-            <a href="/api/Combined/Fasciculus.Xml/">Fasciculus.Xml</a>
+            <a href="/api/Combined/Fasciculus.Threading/">Fasciculus.Threading</a>
     </p>
 
                     
-<h1>XWalker Class</h1>
+<h1>CancellationTokenExtensions Class</h1>
 
 <h2>In this article</h2>
 
@@ -963,16 +984,16 @@
         <tr>
             <td>Source</td>
             <td>
-                    <a href="https://github.com/fasciculus/fasciculus/tree/main/source/Fasciculus.Core/Xml/XWalker.cs">XWalker.cs</a>
+                    <a href="https://github.com/fasciculus/fasciculus/tree/main/source/Fasciculus.Core/Threading/CancellationTokenExtensions.cs">CancellationTokenExtensions.cs</a>
             </td>
         </tr>
     </tbody>
 </table>
 
-<code>public class XWalker</code>
+<code>public static class CancellationTokenExtensions</code>
 
 <p>
- A walker to walk <c>XDocument</c>s.
+ Returns the given CancellationToken or <c>CancellationToken.None</c> if the given token is <c>null</c>.
  </p>
 
 
