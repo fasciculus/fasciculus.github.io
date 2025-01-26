@@ -38,13 +38,40 @@
         <details >
             <summary>Fasciculus.Extensions</summary>
             <ul>
-                    <li><a href="/api/Fasciculus.Extensions/Fasciculus.Extensions/">Overview</a></li>
                     <li>
-        <a href="/api/Fasciculus.Extensions/Fasciculus.Extensions/FasciculusExtensionsConfiguration/">&#x2003;FasciculusExtensionsConfiguration</a>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Extensions/">Fasciculus.Extensions</a>
 </li>
 
                     <li>
-        <a href="/api/Fasciculus.Extensions/Fasciculus.Extensions/ServiceRegistry/">&#x2003;ServiceRegistry</a>
+        <details >
+            <summary>Classes</summary>
+            <ul>
+                    <li>
+        <details >
+            <summary>FasciculusExtensionsConfiguration</summary>
+            <ul>
+                    <li>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Extensions/FasciculusExtensionsConfiguration/">FasciculusExtensionsConfiguration</a>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+                    <li>
+        <details >
+            <summary>ServiceRegistry</summary>
+            <ul>
+                    <li>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Extensions/ServiceRegistry/">ServiceRegistry</a>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+            </ul>
+        </details>
 </li>
 
             </ul>
@@ -55,14 +82,24 @@
         <details open>
             <summary>Fasciculus.Support.Progressing</summary>
             <ul>
-                    <li><a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/">Overview</a></li>
+                    <li>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/">Fasciculus.Support.Progressing</a>
+</li>
+
+                    <li>
+        <details open>
+            <summary>Classes</summary>
+            <ul>
                     <li>
         <details open>
             <summary>ObservableAccumulatingProgress&lt;T&gt;</summary>
             <ul>
-                    <li><a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/ObservableAccumulatingProgress-1/">Overview</a></li>
                     <li>
-        <details open>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/ObservableAccumulatingProgress-1/">ObservableAccumulatingProgress&lt;T&gt;</a>
+</li>
+
+                    <li>
+        <details >
             <summary>Properties</summary>
             <ul>
                     <li>
@@ -77,12 +114,32 @@
         </details>
 </li>
 
+                    <li>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/ObservableAccumulatingProgress-1/-Constructors.html">Constructors</a>
+</li>
+
             </ul>
         </details>
 </li>
 
                     <li>
-        <a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/ObservableLongProgress/">&#x2003;ObservableLongProgress</a>
+        <details >
+            <summary>ObservableLongProgress</summary>
+            <ul>
+                    <li>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/ObservableLongProgress/">ObservableLongProgress</a>
+</li>
+
+                    <li>
+        <a href="/api/Fasciculus.Extensions/Fasciculus.Support.Progressing/ObservableLongProgress/-Constructors.html">Constructors</a>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+            </ul>
+        </details>
 </li>
 
             </ul>
@@ -107,6 +164,7 @@
 <ul>
     <li><a href="#definition">Definition</a></li>
         <li><a href="#properties">Properties</a></li>
+        <li><a href="#constructors">Constructors</a></li>
     <li><a href="#applies-to">Applies to</a></li>
 </ul>
 
@@ -132,10 +190,7 @@
 <code>public partial class ObservableAccumulatingProgress&lt;T&gt;</code>
 
 <p>
- Initializes a new accumulating progress.
- <p>
- A non-null <paramref /> must be given unless the <c>Accumulate(T)</c> method is overridden.
- </p>
+ Accumulating progress.
  </p>
 
 
@@ -165,6 +220,31 @@
             </tr>
     </tbody>
 </table>
+
+    
+<h2 id="constructors">Constructors</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Constructor</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr>
+                <td>ObservableAccumulatingProgress(Func&lt;T, T, T&gt;?,T)</td>
+                <td>
+ Initializes a new accumulating progress.
+ <p>
+ A non-null <c>accumulate</c> must be given unless the <c>Accumulate(T)</c> method is overridden.
+ </p>
+ </td>
+            </tr>
+    </tbody>
+</table>
+
+
 
 <h2 id="applies-to">Applies To</h2>
 
