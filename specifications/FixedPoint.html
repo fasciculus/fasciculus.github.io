@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fixed Point Algorithms | Fasciculus</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/katex/katex.min.css" />
+        <script defer src="/lib/katex/katex.min.js"></script>
+        <script defer src="/lib/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <link rel="stylesheet" href="/css/fasciculus2.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="row fsc-navbar">
+                <div class="col fsc-navbar-left">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/"><img class="fsc-logo" src="/images/fasciculus.png" /></a></li>
+                        <li class="nav-item"><a class="nav-link" href="/blog/">Blog</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/concepts/">Concepts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/specifications/">Specifications</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/api/">APIs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/releases.html">Releases</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/licenses/">Licenses</a></li>
+                    </ul>
+                </div>
+                <div class="col fsc-navbar-right">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/privacy.html">Privacy</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://github.com/fasciculus/fasciculus/"><img src="/images/github-32.png" alt="View on GitHub" /></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <main role="main" class="pb-3">
+                    <h1>Fixed Point Algorithms</h1>
+<div class="markdown-alert markdown-alert-warning alert alert-warning" role="alert">
+<p class="mb-0">This is work-in-progress. It isn't even a draft yet.</p>
+</div>
+<p>The Fasciculus.Mathematics package will provide fixed point algorithms.</p>
+<h2>§1 Terminology</h2>
+<p><strong>§1.1</strong> As the Fasciculus.Mathematics package is a C# library, C# data types are used to
+denote integers: <code>sbyte</code> or <code>byte</code> for 8-bit values, <code>short</code> or <code>ushort</code> for 16-bit
+values, <code>int</code> or <code>uint</code> for 32-bit values and <code>long</code> or <code>ulong</code> for 64-bit values.</p>
+<h2>§2 Types</h2>
+<p>The algorithms are static methods of various classes. The class names follow the pattern
+<code>FP&lt;total-bits&gt;Q&lt;fraction-bits&gt;</code> for regular fixed point values and
+<code>AFP&lt;total-bits&gt;</code> for angular values.</p>
+<p><strong>§2.1</strong> <code>&lt;total-bits&gt;</code> is the number of bits used to store a fixed point value. Throughout
+the remainder of this document it is written as <span class="math">\(N\)</span> with <span class="math">\(N\in\set{8, 16, 32, 64}_\N\)</span></p>
+<p><strong>§2.2</strong> <code>&lt;fraction-bits&gt;</code> is the number of bits used to store the fractional part of a fixed
+point value. Throughout the remainder of this document it is written as
+<span class="math">\(Q\)</span> with <span class="math">\(Q\in\set{1, 2, 3, ..., 64}_\N\)</span>. For <span class="math">\(Q\)</span> the following restrictions apply:</p>
+<div class="math">
+\[
+\begin{cases}
+Q = N &amp;\text{for value range }[-1, 1]\\
+Q \le N - 3 &amp;\text{otherwise}
+\end{cases}
+\]</div>
+<p>Regular fixed point values use the two most significant bits for house-keeping (see §3.2).</p>
+<p><strong>§2.3</strong> The <span class="math">\(\epsilon\)</span> value is the smallest representable value such that <span class="math">\(x \plusmn\epsilon \ne x\)</span>.</p>
+<p>Types where <span class="math">\(N\)</span> equals <span class="math">\(Q\)</span> have a larger <span class="math">\(\epsilon\)</span> than expected,
+as again the two most significant bits are used for house-keeping and an additional bit is
+used to provide symmetry around <span class="math">\(0.0\)</span>.</p>
+<p>Example types (of which not all will be implemented):</p>
+<table class="table">
+<thead>
+<tr>
+<th>Type</th>
+<th>Range</th>
+<th><span class="math">\(\epsilon\)</span></th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FP8Q8</td>
+<td><span class="math">\([-1, 1]_\R\)</span></td>
+<td><span class="math">\(2^{-5}\)</span></td>
+<td>Neuronal Networks</td>
+</tr>
+<tr>
+<td>FP16Q8</td>
+<td><span class="math">\([-2^5, 2^5]_\R\)</span></td>
+<td><span class="math">\(2^{-8}\)</span></td>
+<td>Exhaustive testing</td>
+</tr>
+<tr>
+<td>FP16Q16</td>
+<td><span class="math">\([-1, 1]_\R\)</span></td>
+<td><span class="math">\(2^{-13}\)</span></td>
+<td>Exhaustive testing</td>
+</tr>
+<tr>
+<td>FP32Q8</td>
+<td><span class="math">\([-2^{21}, 2^{21}]_\R\)</span></td>
+<td><span class="math">\(2^{-8}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>FP32Q16</td>
+<td><span class="math">\([-2^{13}, 2^{13}]_\R\)</span></td>
+<td><span class="math">\(2^{-16}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>FP32Q24</td>
+<td><span class="math">\([-2^5, 2^5]_\R\)</span></td>
+<td><span class="math">\(2^{-24}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>FP32Q32</td>
+<td><span class="math">\([-1, 1]_\R\)</span></td>
+<td><span class="math">\(2^{-29}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>FP64Q8</td>
+<td><span class="math">\([-2^{53}, 2^{53}]_\R\)</span></td>
+<td><span class="math">\(2^{-8}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>FP64Q16</td>
+<td><span class="math">\([-2^{45}, 2^{45}]_\R\)</span></td>
+<td><span class="math">\(2^{-16}\)</span></td>
+<td>3D-Engine</td>
+</tr>
+<tr>
+<td>FP64Q32</td>
+<td><span class="math">\([-2^{29}, 2^{29}]_\R\)</span></td>
+<td><span class="math">\(2^{-32}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>FP64Q64</td>
+<td><span class="math">\([-1, 1]_\R\)</span></td>
+<td><span class="math">\(2^{-61}\)</span></td>
+<td>3D-Engine</td>
+</tr>
+<tr>
+<td>AFP8</td>
+<td><span class="math">\([-\pi, \pi - \epsilon ]_\R\)</span></td>
+<td><span class="math">\(2\pi \times 2^{-8}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td>AFP16</td>
+<td><span class="math">\([-\pi, \pi - \epsilon ]_\R\)</span></td>
+<td><span class="math">\(2\pi \times 2^{-16}\)</span></td>
+<td>Exhaustive testing</td>
+</tr>
+<tr>
+<td>AFP32</td>
+<td><span class="math">\([-\pi, \pi - \epsilon ]_\R\)</span></td>
+<td><span class="math">\(2\pi \times 2^{-32}\)</span></td>
+<td>3D-Engine</td>
+</tr>
+<tr>
+<td>AFP64</td>
+<td><span class="math">\([-\pi, \pi - \epsilon ]_\R\)</span></td>
+<td><span class="math">\(2\pi \times 2^{-64}\)</span></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Obviously way more types are possible with <span class="math">\(Q\)</span> values that are not a multiple of 8.</p>
+<h2>§3 Storage and Interpretation</h2>
+<h3>§3.1 Underlying Type</h3>
+<p><strong>§3.1.1</strong> <code>FP8</code> values are stored as <code>byte</code>, <code>FP16</code> as <code>ushort</code>, <code>FP32</code> as <code>uint</code>
+and <code>FP64</code> as <code>ulong</code>.</p>
+<p><strong>§3.1.2</strong> <code>AFP8</code> values are stored as <code>sbyte</code>, <code>AFP16</code> as <code>short</code>, <code>AFP32</code> as <code>int</code>
+and <code>AFP64</code> as <code>long</code>.</p>
+<h3>§3.2 Bit numbering</h3>
+<p>The bits within the storage type used to store a fixed point value are numbered
+from 0 (least significant bit or LSB) to <span class="math">\(N{-}1\)</span> (most significant bit or MSB).</p>
+<h3>§3.3 Regular Fixed Point Values</h3>
+<p><strong>§3.3.1</strong> Bit number <span class="math">\(N{-}1\)</span> holds the sign (denoted as <span class="math">\(s\)</span>). If set, the represented value
+is negative.</p>
+<p><strong>§3.3.2</strong> Bit number <span class="math">\(N{-}2\)</span> is the &quot;exceptional&quot; bit (denoted as <span class="math">\(e\)</span>). If set, the
+represented value is either infinity or <code>NaN</code> (&quot;not-a-number&quot;).</p>
+<p><strong>§3.3.3</strong> The remaining bits (0 to <span class="math">\(N{-}3\)</span>) form the mantissa (denoted as <span class="math">\(m\)</span>).</p>
+<h4>§3.3.4 Positive Infinity</h4>
+<p>If only the <span class="math">\(e\)</span> bit is set, the represented value is <span class="math">\(+\infty\)</span>.</p>
+<h4>§3.3.5 Negative Infinity</h4>
+<p>If both the <span class="math">\(s\)</span> bit and the <span class="math">\(e\)</span> bit are set and <span class="math">\(m = 0\)</span>, the represented value is <span class="math">\(-\infty\)</span>.</p>
+<h4>§3.3.7 Not-a-Number</h4>
+<p>If the <span class="math">\(e\)</span> bit is set and <span class="math">\(m \ne 0\)</span>, the represented value is <code>NaN</code>.</p>
+<h4>§3.3.8 Represented Value</h4>
+<p>Unless the <span class="math">\(e\)</span> bit is set, the represented value is:</p>
+<div class="math">
+\[
+x =
+\begin{cases}
+-1^s \times m \times 2^{-Q} &amp;\text{if } Q &lt; N\\
+-1^s \times m \times 2^{-(Q-3)} &amp;\text{if } Q = N
+\end{cases}
+\]</div>
+<h3>§3.4 Angular Values</h3>
+<p>Due to the range of representable values, no infinity or <code>NaN</code> is needed. The mantissa
+is interpreted as signed integer and the represented angle is:</p>
+<div class="math">
+\[
+\phi = 2 \pi \times m \times 2^{-N}
+\]</div>
+<h2>§4 Contants</h2>
+<h3>§4.1 Regular Fixed Point Value Constants</h3>
+<h4>§4.1.1 NaN Contants</h4>
+<p>All <code>FP</code> classes provide a constant representing <code>NaN</code>. Its binary value has all bits except
+the <span class="math">\(s\)</span> bit set.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NaN = 0x7FFF; <span class="comment">// binary: 0111_1111_1111_1111</span>
+</pre></div><h4>§4.1.2 Infinity Constants</h4>
+<p>All <code>FP</code> classes provide constants for <span class="math">\(\plusmn\infty\)</span>. Its binary values have the
+<span class="math">\(s\)</span> bit set according to the represented sign, the <span class="math">\(e\)</span> bit set to 1 and the <span class="math">\(m\)</span> bits
+set to zero.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> PositiveInfinity = 0x4000; <span class="comment">// binary: 0100_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegativeInfinity = 0xC000; <span class="comment">// binary: 1100_0000_0000_0000</span>
+</pre></div><h3>§4.1.3 One Constants</h3>
+<p>All <code>FP</code> classes provide constants for <span class="math">\(\plusmn1\)</span>.</p>
+<p>Example for <code>FP16Q8</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> One = 0x0100; <span class="comment">// binary: 0000_0001_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegativeOne = 0x8100; <span class="comment">// binary: 1000_0001_0000_0000</span>
+</pre></div>
+<p>Example for <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> One = 0x2000; <span class="comment">// binary: 0010_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegativeOne = 0xA000; <span class="comment">// binary: 1010_0000_0000_0000</span>
+</pre></div><h3>§4.1.4 Min and Max Value Constants</h3>
+<p>All <code>FP</code> classes where <span class="math">\(Q \ne N\)</span> provide constants for their minimum and maximum value.</p>
+<p>Example for <code>FP16Q8</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MinValue = 0xA000; <span class="comment">// binary: 1010_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MaxValue = 0x2000; <span class="comment">// binary: 0010_0000_0000_0000</span>
+</pre></div><h3>§4.1.4 Epsilon Constant</h3>
+<p>All <code>FP</code> classes provide constants for <span class="math">\(\epsilon\)</span>.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> Epsilon = 0x0001; <span class="comment">// binary: 0000_0000_0000_0001</span>
+</pre></div><h3>§4.2 Angular Fixed Point Value Constants</h3>
+<h3>§4.2.1 Constant for <span class="math">\(\pi\)</span></h3>
+<p>All <code>AFP</code> classes provide constants for <span class="math">\(\pi\)</span>.</p>
+<p>Example for <code>AFP16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">short</span> Pi = 0x8000; <span class="comment">// binary: 1000_0000_0000_0000</span>
+</pre></div><h3>§4.2.2 Epsilon Constant</h3>
+<p>All <code>AFP</code> classes provide constants for <span class="math">\(\epsilon\)</span>.</p>
+<p>Example for <code>AFP16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">short</span> Epsilon = 0x0001; <span class="comment">// binary: 0000_0000_0000_0001</span>
+</pre></div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <p>&copy; 2024-2025 The Fasciculus Project.</p>
+        </div>
+    </footer>
+</body>
+</html>
