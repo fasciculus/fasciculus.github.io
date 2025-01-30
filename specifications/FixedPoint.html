@@ -260,6 +260,109 @@ set to zero.</p>
 <p>Example for <code>AFP16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">short</span> Epsilon = 0x0001; <span class="comment">// binary: 0000_0000_0000_0001</span>
+</pre></div><h2>§5 Masks</h2>
+<h3>§5.1 Sign Mask</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> SignMask = 0x8000; <span class="comment">// binary: 1000_0000_0000_0000</span>
+</pre></div><h3>§5.2 Exception Mask</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> ExceptionMask = 0x4000; <span class="comment">// binary: 0100_0000_0000_0000</span>
+</pre></div><h3>§5.2 Mantissa Mask</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MantissaMask = 0x3FFF; <span class="comment">// binary: 0011_1111_1111_1111</span>
+</pre></div><h2>§6 Validation Check Algorithms</h2>
+<h3>$6.1 Check for <code>NaN</code></h3>
+<p>All <code>FP</code> classes provide a ckeck for <code>NaN</code> named <code>IsNaN</code>.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNaN(<span class="keyword">ushort</span> value);
+</pre></div><h3>$6.2 Check for Negativity</h3>
+<p>Checks whether the given value is negative.</p>
+<p>The result is <code>false</code> for <code>NaN</code>.</p>
+<p>The result is <code>true</code> for NegativeInfinity, <code>false</code> for PositiveInfinity.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegative(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegativeUnsafe(<span class="keyword">ushort</span> value);
+</pre></div><h3>$6.3 Check for Infinity</h3>
+<p>All <code>FP</code> classes provide checks for infinity.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsPositiveInfinity(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegativeInfinity(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsInfinity(<span class="keyword">ushort</span> value); <span class="comment">// positive or negative</span>
+</pre></div><h2>§7 Algorithm restrictions</h2>
+<h3>§7.1 Safe and Unsafe Algorithms</h3>
+<p>Most algorithms come in two versions: a safe and an unsafe version.</p>
+<p>The unsafe versions expect their arguments to be neither infinite nor <code>NaN</code>.</p>
+<h3>§7.2 Overflow or Underflow</h3>
+<p>Most algorithms may return <span class="math">\(+\infty\)</span> on overflow or <span class="math">\(-\infty\)</span> on underflow.</p>
+<h3>§7.3 Returning <code>NaN</code></h3>
+<p>All algorithms return <code>NaN</code>, if at least on of their arguments is <code>NaN</code>.</p>
+<p>Algorithms like division or square root return <code>NaN</code>, if the result is undefined
+(like division by zero or square root of negative values).</p>
+<h2>§8 Unary Algorithms</h2>
+<h3>§8.1 Absolute Value</h3>
+<p>The absolute value of <code>NaN</code> is <code>NaN</code>.</p>
+<p>The absolute value of NegativeInfinity is PositiveInfinity.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Abs(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> AbsUnsafe(<span class="keyword">ushort</span> value);
+</pre></div><h3>§8.2 Negate</h3>
+<p>Toggles the <span class="math">\(s\)</span> bit of the value.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Negate(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> NegateUnsafe(<span class="keyword">ushort</span> value);
+</pre></div><h3>§8.3 Invert</h3>
+<p>Calculates the inverse (<span class="math">\(1/x\)</span>) of the value.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Invert(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> InvertUnsafe(<span class="keyword">ushort</span> value);
+</pre></div><h3>8.4 Conversion to <code>double</code></h3>
+<p>Converts the value to a <code>double</code>. This may result in a loss of precision for
+<span class="math">\(N \gt 52\)</span>.</p>
+<p>If the <span class="math">\(e\)</span> bit is set, this function returns the respective <code>double</code> counterpart.</p>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> ToDouble(<span class="keyword">ushort</span> value);
+</pre></div><h2>§9 Shift Algorithms</h2>
+<h3>$9.1 Left Shift</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftLeft(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftLeftUnsafe(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
+</pre></div><h3>$9.1 Right Shift</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftRight(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftRightUnsafe(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
+</pre></div><h2>§10 Arithmetic Algorithms</h2>
+<h3>§10.1 Addition</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Add(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> AddUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
+</pre></div><h3>§10.2 Subtraction</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Sub(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> SubUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
+</pre></div><h3>§10.3 Multiplicaction</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Mul(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> MulUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
+</pre></div><h3>§10.4 Division</h3>
+<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Div(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> DivUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 </pre></div>
                 </main>
             </div>
