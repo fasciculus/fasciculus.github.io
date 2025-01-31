@@ -40,6 +40,16 @@
             <div class="col">
                 <main role="main" class="pb-3">
                     <h1>Fixed Point Algorithms</h1>
+<table>
+    <tr>
+        <td>Status</td>
+        <td>pre-draft</td>
+    </tr>
+    <tr>
+        <td>Version</td>
+        <td>2025-01-31</td>
+    </tr>
+</table>
 <div class="markdown-alert markdown-alert-warning alert alert-warning" role="alert">
 <p class="mb-0">This is work-in-progress. It isn't even a draft yet.</p>
 </div>
@@ -193,8 +203,11 @@ represented value is either infinity or <code>NaN</code> (&quot;not-a-number&quo
 <h4>§3.3.5 Negative Infinity</h4>
 <p>If both the <span class="math">\(s\)</span> bit and the <span class="math">\(e\)</span> bit are set and <span class="math">\(m = 0\)</span>, the represented value is <span class="math">\(-\infty\)</span>.</p>
 <h4>§3.3.7 Not-a-Number</h4>
-<p>If the <span class="math">\(e\)</span> bit is set and <span class="math">\(m \ne 0\)</span>, the represented value is <code>NaN</code>.</p>
-<h4>§3.3.8 Represented Value</h4>
+<h4>§3.3.8 Zero</h4>
+<p>If the <span class="math">\(e\)</span> bit is not set and <span class="math">\(m = 0\)</span>, the represented value is <span class="math">\(0\)</span>. The <span class="math">\(s\)</span> bit
+is ignored.</p>
+<p>This results in the fact that <span class="math">\(-0\)</span> exists. It is treated as <span class="math">\(0\)</span>.</p>
+<h4>§3.3.9 Represented Value</h4>
 <p>Unless the <span class="math">\(e\)</span> bit is set, the represented value is:</p>
 <div class="math">
 \[
@@ -216,154 +229,433 @@ is interpreted as signed integer and the represented angle is:</p>
 <h4>§4.1.1 NaN Contants</h4>
 <p>All <code>FP</code> classes provide a constant representing <code>NaN</code>. Its binary value has all bits except
 the <span class="math">\(s\)</span> bit set.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Value for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NaN = 0x7FFF; <span class="comment">// binary: 0111_1111_1111_1111</span>
 </pre></div><h4>§4.1.2 Infinity Constants</h4>
 <p>All <code>FP</code> classes provide constants for <span class="math">\(\plusmn\infty\)</span>. Its binary values have the
 <span class="math">\(s\)</span> bit set according to the represented sign, the <span class="math">\(e\)</span> bit set to 1 and the <span class="math">\(m\)</span> bits
 set to zero.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Values for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> PositiveInfinity = 0x4000; <span class="comment">// binary: 0100_0000_0000_0000</span>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegativeInfinity = 0xC000; <span class="comment">// binary: 1100_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> PosInf = 0x4000; <span class="comment">// binary: 0100_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegInf = 0xC000; <span class="comment">// binary: 1100_0000_0000_0000</span>
 </pre></div><h3>§4.1.3 One Constants</h3>
 <p>All <code>FP</code> classes provide constants for <span class="math">\(\plusmn1\)</span>.</p>
-<p>Example for <code>FP16Q8</code>:</p>
+<p>Values for <code>FP16Q8</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> One = 0x0100; <span class="comment">// binary: 0000_0001_0000_0000</span>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegativeOne = 0x8100; <span class="comment">// binary: 1000_0001_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegOne = 0x8100; <span class="comment">// binary: 1000_0001_0000_0000</span>
 </pre></div>
-<p>Example for <code>FP16Q16</code>:</p>
+<p>Values for <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> One = 0x2000; <span class="comment">// binary: 0010_0000_0000_0000</span>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegativeOne = 0xA000; <span class="comment">// binary: 1010_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> NegOne = 0xA000; <span class="comment">// binary: 1010_0000_0000_0000</span>
 </pre></div><h3>§4.1.4 Min and Max Value Constants</h3>
 <p>All <code>FP</code> classes where <span class="math">\(Q \ne N\)</span> provide constants for their minimum and maximum value.</p>
-<p>Example for <code>FP16Q8</code>:</p>
+<p>Values for <code>FP16Q8</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MinValue = 0xA000; <span class="comment">// binary: 1010_0000_0000_0000</span>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MaxValue = 0x2000; <span class="comment">// binary: 0010_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MinVal = 0xA000; <span class="comment">// binary: 1010_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MaxVal = 0x2000; <span class="comment">// binary: 0010_0000_0000_0000</span>
 </pre></div><h3>§4.1.4 Epsilon Constant</h3>
 <p>All <code>FP</code> classes provide constants for <span class="math">\(\epsilon\)</span>.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Value for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> Epsilon = 0x0001; <span class="comment">// binary: 0000_0000_0000_0001</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> Eps = 0x0001; <span class="comment">// binary: 0000_0000_0000_0001</span>
 </pre></div><h3>§4.2 Angular Fixed Point Value Constants</h3>
 <h3>§4.2.1 Constant for <span class="math">\(\pi\)</span></h3>
 <p>All <code>AFP</code> classes provide constants for <span class="math">\(\pi\)</span>.</p>
-<p>Example for <code>AFP16</code>:</p>
+<p>Value for <code>AFP16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">short</span> Pi = 0x8000; <span class="comment">// binary: 1000_0000_0000_0000</span>
 </pre></div><h3>§4.2.2 Epsilon Constant</h3>
 <p>All <code>AFP</code> classes provide constants for <span class="math">\(\epsilon\)</span>.</p>
-<p>Example for <code>AFP16</code>:</p>
+<p>Value for <code>AFP16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">short</span> Epsilon = 0x0001; <span class="comment">// binary: 0000_0000_0000_0001</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">short</span> Eps = 0x0001; <span class="comment">// binary: 0000_0000_0000_0001</span>
 </pre></div><h2>§5 Masks</h2>
 <h3>§5.1 Sign Mask</h3>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Value for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> SignMask = 0x8000; <span class="comment">// binary: 1000_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> SgnMsk = 0x8000; <span class="comment">// binary: 1000_0000_0000_0000</span>
 </pre></div><h3>§5.2 Exception Mask</h3>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Value for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> ExceptionMask = 0x4000; <span class="comment">// binary: 0100_0000_0000_0000</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> ExcMsk = 0x4000; <span class="comment">// binary: 0100_0000_0000_0000</span>
 </pre></div><h3>§5.2 Mantissa Mask</h3>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Value for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MantissaMask = 0x3FFF; <span class="comment">// binary: 0011_1111_1111_1111</span>
+<span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">ushort</span> MntMsk = 0x3FFF; <span class="comment">// binary: 0011_1111_1111_1111</span>
 </pre></div><h2>§6 Validation Check Algorithms</h2>
 <h3>$6.1 Check for <code>NaN</code></h3>
 <p>All <code>FP</code> classes provide a ckeck for <code>NaN</code> named <code>IsNaN</code>.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Signature for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNaN(<span class="keyword">ushort</span> value);
 </pre></div><h3>$6.2 Check for Negativity</h3>
 <p>Checks whether the given value is negative.</p>
 <p>The result is <code>false</code> for <code>NaN</code>.</p>
-<p>The result is <code>true</code> for NegativeInfinity, <code>false</code> for PositiveInfinity.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>The result is <code>true</code> for <span class="math">\(-\infty\)</span>, <code>false</code> for <span class="math">\(\infty\)</span>.</p>
+<p>The result is <code>false</code> for <span class="math">\(0\)</span>.</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegative(<span class="keyword">ushort</span> value);
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegativeUnsafe(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNeg(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegUnsafe(<span class="keyword">ushort</span> value);
 </pre></div><h3>$6.3 Check for Infinity</h3>
 <p>All <code>FP</code> classes provide checks for infinity.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsPositiveInfinity(<span class="keyword">ushort</span> value);
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegativeInfinity(<span class="keyword">ushort</span> value);
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsInfinity(<span class="keyword">ushort</span> value); <span class="comment">// positive or negative</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsPosInf(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsNegInf(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsInf(<span class="keyword">ushort</span> value); <span class="comment">// positive or negative</span>
+</pre></div><h3>$6.3 Check for Zero</h3>
+<p>Signature for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> IsZero(<span class="keyword">ushort</span> value);
 </pre></div><h2>§7 Algorithm restrictions</h2>
 <h3>§7.1 Safe and Unsafe Algorithms</h3>
 <p>Most algorithms come in two versions: a safe and an unsafe version.</p>
-<p>The unsafe versions expect their arguments to be neither infinite nor <code>NaN</code>.</p>
+<p>The unsafe versions expect their arguments to not be <code>NaN</code>.</p>
+<p>Some unsafe versions expect their arguments to not be infinite neither.</p>
 <h3>§7.2 Overflow or Underflow</h3>
 <p>Most algorithms may return <span class="math">\(+\infty\)</span> on overflow or <span class="math">\(-\infty\)</span> on underflow.</p>
 <h3>§7.3 Returning <code>NaN</code></h3>
-<p>All algorithms return <code>NaN</code>, if at least on of their arguments is <code>NaN</code>.</p>
-<p>Algorithms like division or square root return <code>NaN</code>, if the result is undefined
+<p>All safe algorithms return <code>NaN</code>, if at least on of their arguments is <code>NaN</code>.</p>
+<p>Safe algorithms like division or square root return <code>NaN</code>, if the result is undefined
 (like division by zero or square root of negative values).</p>
 <h2>§8 Unary Algorithms</h2>
 <h3>§8.1 Absolute Value</h3>
 <p>The absolute value of <code>NaN</code> is <code>NaN</code>.</p>
-<p>The absolute value of NegativeInfinity is PositiveInfinity.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>The absolute value of <span class="math">\(-\infty\)</span> is <span class="math">\(\infty\)</span>.</p>
+<p><code>AbsUnsafe</code> expects its argument to not be <code>NaN</code>.</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Abs(<span class="keyword">ushort</span> value);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> AbsUnsafe(<span class="keyword">ushort</span> value);
 </pre></div><h3>§8.2 Negate</h3>
 <p>Toggles the <span class="math">\(s\)</span> bit of the value.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p><code>NegUnsafe</code> expects its argument to not be <code>NaN</code>.</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Negate(<span class="keyword">ushort</span> value);
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> NegateUnsafe(<span class="keyword">ushort</span> value);
-</pre></div><h3>§8.3 Invert</h3>
-<p>Calculates the inverse (<span class="math">\(1/x\)</span>) of the value.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Neg(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> NegUnsafe(<span class="keyword">ushort</span> value);
+</pre></div><h3>§8.3 Reciprocal (<span class="math">\(1/x\)</span>)</h3>
+<p>Calculates the reciprocal (<span class="math">\(1/x\)</span>) of the value.</p>
+<p>The reciprocals of <code>NaN</code>, <span class="math">\(\infty\)</span>, <span class="math">\(-\infty\)</span> and <span class="math">\(0\)</span> are all <code>NaN</code>.</p>
+<p><code>RecUnsafe</code> expects its argument to neither be <code>NaN</code>, infinite nor <span class="math">\(0\)</span>.</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Invert(<span class="keyword">ushort</span> value);
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> InvertUnsafe(<span class="keyword">ushort</span> value);
-</pre></div><h3>8.4 Conversion to <code>double</code></h3>
-<p>Converts the value to a <code>double</code>. This may result in a loss of precision for
-<span class="math">\(N \gt 52\)</span>.</p>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Rec(<span class="keyword">ushort</span> value);
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> RecUnsafe(<span class="keyword">ushort</span> value);
+</pre></div><h3>8.4 Conversions</h3>
+<p>All conversions may result in a loss of precision.</p>
+<h4>8.4.1 Conversion to <code>double</code></h4>
+<p>This conversion may result in a loss of precision for <span class="math">\(N \gt 52\)</span>.</p>
 <p>If the <span class="math">\(e\)</span> bit is set, this function returns the respective <code>double</code> counterpart.</p>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Signature for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> ToDouble(<span class="keyword">ushort</span> value);
+</pre></div><h4>8.4.1 Conversion from <code>double</code></h4>
+<p>This conversion may result in a loss of precision for <span class="math">\(N \lt 52\)</span>.</p>
+<p>This conversion returns <span class="math">\(\infty\)</span> (or <span class="math">\(-\infty\)</span>) if the given value doesn't fit into
+the target type.</p>
+<p>This conversion returns <code>NaN</code>, <span class="math">\(\infty\)</span> or <span class="math">\(-\infty\)</span> if the given value is one
+of these values.</p>
+<p>Signature for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<div class="csharp"><pre>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> FromDouble(<span class="keyword">double</span> value);
 </pre></div><h2>§9 Shift Algorithms</h2>
 <h3>$9.1 Left Shift</h3>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftLeft(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftLeftUnsafe(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
 </pre></div><h3>$9.1 Right Shift</h3>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftRight(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> ShiftRightUnsafe(<span class="keyword">ushort</span> value, <span class="keyword">uint</span> count);
 </pre></div><h2>§10 Arithmetic Algorithms</h2>
 <h3>§10.1 Addition</h3>
 <p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p><code>AddUnsafe</code> expects its arguments to neither be <code>NaN</code> nor infinite.</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Add(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> AddUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 </pre></div><h3>§10.2 Subtraction</h3>
 <p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p><code>SubUnsafe</code> expects its arguments to neither be <code>NaN</code> nor infinite.</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Sub(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> SubUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 </pre></div><h3>§10.3 Multiplicaction</h3>
 <p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p><code>MulUnsafe</code> expects its arguments to neither be <code>NaN</code> nor infinite.</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Mul(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> MulUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 </pre></div><h3>§10.4 Division</h3>
-<p>Example for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
+<p><code>DivUnsafe</code> expects its arguments to neither be <code>NaN</code> nor infinite.</p>
+<p><code>DivUnsafe</code> expects its secon argument (the divisor) to not be <span class="math">\(0\)</span>.</p>
+<p>Signatures for <code>FP16Q8</code> and <code>FP16Q16</code>:</p>
 <div class="csharp"><pre>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Div(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> DivUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
-</pre></div>
+</pre></div><h2>§A Division Algorithms</h2>
+<p>The division algorithms are implemented as a multiplication of the nominator <span class="math">\(n\)</span> with the
+reciprocal <span class="math">\(r\)</span> of the denominator <span class="math">\(d\)</span> to get the quotient <span class="math">\(q\)</span>:</p>
+<div class="math">
+\[
+\tag{A.1}
+q = n / d = n (1 / d) = n r
+\]</div>
+<h3>§A.1 Preparations</h3>
+<p>To calculate the initial estimate of the Newton iterations, <span class="math">\(d\)</span> must be
+in the range <span class="math">\([0.5, 1.0]\)</span>. This can be achieved as follows.</p>
+<ol>
+<li>If <span class="math">\(d \lt 0\)</span>, both <span class="math">\(n\)</span> and <span class="math">\(d\)</span> are negated.</li>
+<li>If <span class="math">\(d \notin [0.5, 1.0]\)</span> both <span class="math">\(n\)</span> and <span class="math">\(d\)</span> are bit shifted:
+<ol>
+<li>If <span class="math">\(d \lt 0.5\)</span>, both <span class="math">\(n\)</span> and <span class="math">\(d\)</span> are left shifted by the appropriate number of bits.</li>
+<li>If <span class="math">\(d \gt 1.0\)</span>, both <span class="math">\(n\)</span> and <span class="math">\(d\)</span> are right shifted by the appropriate number of bits.</li>
+</ol>
+</li>
+</ol>
+<p>Step 2.1. may overflow <span class="math">\(n\)</span>, leading to a premature <span class="math">\(\infty\)</span> or <span class="math">\(-\infty\)</span> result.</p>
+<p>Step 2.2. may lead to <span class="math">\(n\)</span> becoming <span class="math">\(0\)</span>, leading to a premature <span class="math">\(0\)</span> result.</p>
+<h3>§A.2 Newton Iteration Step</h3>
+<p>According to this <a href="https://en.wikipedia.org/wiki/Division_algorithm#Newton%E2%80%93Raphson_division">Wikipedia article</a>, to find the inverse (reciprocal) <span class="math">\(r\)</span> of
+<span class="math">\(d\)</span> we use Newton's method to solve the equation:</p>
+<div class="math">
+\[
+\tag{A.2.1}
+f(r) = (1/r) - d = r^{-1} - d = 0
+\]</div>
+<p>The derivative of (A.2.1) is:</p>
+<div class="math">
+\[
+\tag{A.2.2}
+f'(r) = -1 / r^2= -r^{-2}
+\]</div>
+<p>Starting from an initial estimate <span class="math">\(r_0\)</span>, a Newton iteration is given as:</p>
+<div class="math">
+\[
+\tag{A.2.3}
+r_{i+1} = r_i - \frac{f(r_i)}{f'(r_i)}
+\]</div>
+<p>Placing (A.2.1) and (A.2.2) into (A.2.3):</p>
+<div class="math">
+\[
+\tag{A.2.4}
+r_{i+1} = r_i - \frac{r^{-1} - d}{-r^{-2}}
+\]</div>
+<p>Eliminating the minus in the denominator by multiplying the fraction in (A.2.4) with <span class="math">\(-1\)</span>:</p>
+<div class="math">
+\[
+\tag{A.2.5}
+r_{i+1} = r_i + \frac{r^{-1} - d}{r^{-2}}
+\]</div>
+<p>Eliminating the denominator of the fraction in (A.2.5) by multiplying both the nominator and
+the denominator with <span class="math">\(r_i^2\)</span>:</p>
+<div class="math">
+\[
+\tag{A.2.6}
+r_{i+1} = r_i + r_i^2(r^{-1} - d)
+\]</div>
+<p>Eliminating the <span class="math">\(r^{-1}\)</span> in (A.2.6):</p>
+<div class="math">
+\[
+\begin{align}
+\tag{A.2.7}     r_{i+1} &amp;= r_i + r_i(1 - r_i d) \\
+\notag                  &amp;= r_i (2 - r_i d)
+\end{align}
+\]</div>
+<p>The resulting iteration step uses addition, subtraction and multiplication only.</p>
+<p>Since <span class="math">\(d r = 1\)</span> and <span class="math">\(d r_i \approx 1\)</span> the error <span class="math">\(\epsilon_i\)</span> is defined as:</p>
+<div class="math">
+\[
+\notag    \epsilon_i = 1 - d r_i
+\]</div>
+<p>After an iteration the error is:</p>
+<div class="math">
+\[
+\begin{align}
+\notag    \epsilon_{i+1} &amp;= 1 - d r_{i+1} \\
+\notag    &amp;= 1 - d (r_i (2 - r_i d)) \\
+\notag    &amp;= 1 - d (2 r_i - r_i^2 d) \\
+\notag    &amp;= 1 - 2 d r_i + r_i^2 d^2 \\
+\notag    &amp;= (1 - d r_i)^2 \\
+\notag    &amp;= \epsilon_i^2
+\end{align}
+\]</div>
+<p>Given a good initial estimate <span class="math">\(r_0\)</span>, such that |<span class="math">\(\epsilon_0| \lt 1\)</span>, every iteration will
+double the amount of correct digits (bits) of the result.</p>
+<h3>§A.3 Initial Estimate</h3>
+<p>For the following to work, <span class="math">\(d\)</span> must be limited:</p>
+<div class="math">
+\[
+d \in [0.5, 1.0]
+\]</div>
+<p>with the lower bound <span class="math">\(d_0\)</span> and the upper bound <span class="math">\(d_1\)</span>:</p>
+<div class="math">
+\[
+\begin{align}
+\notag    d_0 &amp;= 0.5 = 1/2 \\
+\notag    d_1 &amp;= 1
+\end{align}
+\]</div>
+<p>The initial estimate <span class="math">\(r_0\)</span> is (second order Chebyshev polynomial):</p>
+<div class="math">
+\[
+\notag  r_0 = t_0 + t_1 d \approx r
+\]</div>
+<p>Since <span class="math">\(d r = 1\)</span> and <span class="math">\(d r_0 \approx 1\)</span>, the absolute value of the error <span class="math">\(\epsilon_0\)</span> is:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  |\epsilon_0| &amp;= |d r - d r_0| \\
+\notag               &amp;= |1 - d(t_0 + d t_1)|    
+\end{align}
+\]</div>
+<p>This gives the error function and its derivative:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  \epsilon = f(d) &amp;= 1 - d(t_0 + d t_1) \\
+\notag                  &amp;= 1 - t_0 d - t_1 d^2 \\
+\notag            f'(d) &amp;= -t_0 - 2 t_1 d
+\end{align}
+\]</div>
+<p>To minimize the error <span class="math">\(|\epsilon_0|\)</span>, the local minimum of <span class="math">\(f(d)\)</span> is reuired.
+It occurs at <span class="math">\(f'(d) = 0\)</span>. Solving for d:</p>
+<div class="math">
+\[
+\begin{align}
+\notag           f'(d) &amp;= 0 \\
+\notag  -t_0 - 2 t_1 d &amp;= 0 \\
+\notag        -2 t_1 d &amp;= t_0 \\
+\notag               d &amp;= - \frac{t_0}{2 t_1}
+\end{align}
+\]</div>
+<p>Applying the Chebyshev equioscillation theorem gives the equations:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  f(d_0) &amp;= f(d_1) \\
+\notag  f(d_0) &amp;= -f(d) \\
+\notag  f(d_1) &amp;= -f(d)
+\end{align}
+\]</div>
+<p>Using (A3.?) to solve for <span class="math">\(t_1\)</span>:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  f(d_0) &amp;= f(d_1) \\
+\notag  1 - t_0 d_0 - t_1 d_0^2 &amp;= 1 - t_0 d_1 - t_1 d_1^2 \\
+\notag  1 - \frac{1}{2} t_0 - \frac{1}{4} t_1 &amp;=  1 - t_0 - t_1 \\
+\notag  4 - 2 t_0 - t_1 &amp;= 4 - 4 t_0 - 4 t_1 \\
+\notag  - 2 t_0 - t_1 &amp;= - 4 t_0 - 4 t_1 \\
+\notag  - t_1 &amp;= - 2 t_0 - 4 t_1 \\
+\notag  3 t_1 &amp;= - 2 t_0 \\
+\notag  t_1 &amp;= - \frac{2}{3} t_0
+\end{align}
+\]</div>
+<p>Replacing:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  f(d_1) &amp;= 1 - d_1(t_0 + d_1 t_1) \\
+\notag  f(d_1) &amp;= 1 - (t_0 + t_1) \\
+\notag  f(d_1) &amp;= 1 - \bigg(t_0 - \frac{2}{3} t_0\bigg) \\
+\notag  f(d_1) &amp;= 1 - \frac{1}{3} t_0
+\end{align}
+\]</div>
+<p>Replacing:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  f(d) &amp;= 1 - t_0 d - t_1 d^2 \\
+\notag  f(d) &amp;= 1 - t_0 \bigg(- \frac{t_0}{2 t_1}\bigg) - t_1 \bigg(- \frac{t_0}{2 t_1}\bigg)^2 \\
+\notag  f(d) &amp;= 1 - t_0 \bigg(- \frac{t_0}{2 (- \frac{2}{3} t_0)}\bigg) - \bigg(- \frac{2}{3} t_0\bigg) \bigg(- \frac{t_0}{2 (- \frac{2}{3} t_0)}\bigg)^2 \\
+\notag  f(d) &amp;= 1 - \bigg(\frac{t_0^2}{\frac{4}{3} t_0}\bigg) - \bigg(- \frac{2}{3} t_0\bigg) \bigg(\frac{t_0}{\frac{4}{3} t_0}\bigg)^2 \\
+\notag  f(d) &amp;= 1 - \bigg(\frac{t_0}{\frac{4}{3}}\bigg) + \frac{2}{3} t_0 \bigg(\frac{1}{\frac{4}{3}}\bigg)^2 \\
+\notag  f(d) &amp;= 1 - \frac{3}{4}t_0 + \frac{2}{3} t_0 \bigg(\frac{1}{\frac{16}{9}}\bigg) \\
+\notag  f(d) &amp;= 1 - \frac{36}{48}t_0 + \frac{18}{48} t_0 \\
+\notag  f(d) &amp;= 1 - \frac{9}{24}t_0  \\
+\end{align}
+\]</div>
+<p>Using:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  -f(d) &amp;= f(d1) \\
+\notag  -(1 - \frac{9}{24}t_0) &amp;= 1 - \frac{1}{3} t_0 \\
+\notag   \frac{9}{24}t_0 - 1 &amp;= 1 - \frac{8}{24} t_0 \\
+\notag   \frac{9}{24}t_0 &amp;= 2 - \frac{8}{24} t_0 \\
+\notag   \frac{17}{24}t_0 &amp;= \frac{48}{24} \\
+\notag   t_0 &amp;= \frac{48}{17} \\
+\notag   t_1 &amp;= - \frac{2}{3} t_0 \\
+\notag   t_1 &amp;= - \frac{2}{3} \frac{48}{17} \\
+\notag   t_1 &amp;= - \frac{32}{17} \\
+\end{align}
+\]</div>
+<h3>§A.4 Required Newton Iterations</h3>
+<p>The error <span class="math">\(\epsilon_0\)</span> produced by these parameters is at most:</p>
+<div class="math">
+\[
+\begin{align}
+\notag  |\epsilon_0| &amp;= |f(d_1)| \\
+\notag  |\epsilon_0| &amp;= \bigg|1 - \frac{1}{3} t_0\bigg| \\
+\notag  |\epsilon_0| &amp;= \bigg|1 - \frac{1}{3} \frac{48}{17}\bigg| \\
+\notag  |\epsilon_0| &amp;= \bigg|1 - \frac{16}{17}\bigg| \\
+\notag  |\epsilon_0| &amp;= \frac{1}{17} \\
+\end{align}
+\]</div>
+<p>The precision <span class="math">\(p\)</span> (binary digits of reciprocal accuracy) after <span class="math">\(i\)</span> iterations is:</p>
+<div class="math">
+\[
+p = -2^i \log_2 \epsilon_0 - 1
+\]</div>
+<table class="table">
+<thead>
+<tr>
+<th><span class="math">\(i\)</span></th>
+<th style="text-align: right;"><span class="math">\(p\)</span></th>
+<th>Satisfies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align: right;">3.08</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td style="text-align: right;">7.17</td>
+<td>FP8</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align: right;">15.35</td>
+<td>FP16</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align: right;">31.70</td>
+<td>FP32</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align: right;">64.40</td>
+<td>FP64</td>
+</tr>
+</tbody>
+</table>
+
                 </main>
             </div>
         </div>
