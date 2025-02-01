@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Precision in Approximation Algorithms | Fasciculus</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/katex/katex.min.css" />
+        <script defer src="/lib/katex/katex.min.js"></script>
+        <script defer src="/lib/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <link rel="stylesheet" href="/css/fasciculus2.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="row fsc-navbar">
+                <div class="col fsc-navbar-left">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/"><img class="fsc-logo" src="/images/fasciculus.png" /></a></li>
+                        <li class="nav-item"><a class="nav-link" href="/blog/">Blog</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/concepts/">Concepts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/specifications/">Specifications</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/api/">APIs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/releases.html">Releases</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/licenses/">Licenses</a></li>
+                    </ul>
+                </div>
+                <div class="col fsc-navbar-right">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/privacy.html">Privacy</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://github.com/fasciculus/fasciculus/"><img src="/images/github-32.png" alt="View on GitHub" /></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="row">
+                <div class="col fsc-navigation-forest">
+                    <ul class="fsc-navigation-forest">
+        <li>
+        <details open>
+            <summary>2025 (1)</summary>
+            <ul>
+                    <li>
+        <details open>
+            <summary>February (1)</summary>
+            <ul>
+                    <li>
+        <a href="/blog/2025/02/BinaryPrecision.html">Binary Precision in Approximation Algorithms</a>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+</ul>
+                </div>
+            <div class="col">
+                <main role="main" class="pb-3">
+                        
+                    <h1>Binary Precision</h1>
+<table class="fsc-frontmatter">
+  <tbody>
+    <tr>
+      <td>Published:</td>
+      <td>2025-02-01</td>
+    </tr>
+    <tr>
+      <td>Author:</td>
+      <td>Roger H. Jörg</td>
+    </tr>
+  </tbody>
+</table>
+<p>While researching the division algorithm for my fixed point library,
+I stumbled over the following formula that gives the count of correct bits <span class="math">\(p_i\)</span>
+after <span class="math">\(i\)</span> iterations of the approximation algorithm with an initial
+error <span class="math">\(0 \lt \epsilon_0 \lt 1\)</span>:</p>
+<div class="math">
+\[
+\begin{align}
+\notag p_i &amp;= -2^i \log_2 \epsilon_0 - 1 \\
+\notag p_i &amp;= 2^i \log_2 (1/\epsilon_0) - 1
+\end{align}
+\]</div>
+<p>Since a non-integral <span class="math">\(p\)</span> doesn't make much sense, I rewrite this as:</p>
+<div class="math">
+\[
+\tag{1} p_i = 2^i \lfloor\log_2 (1/\epsilon_0)\rfloor - 1
+\]</div>
+<p>The <span class="math">\(2^i\)</span> element in the formula stems from the fact that the Newton iteration step
+used in that division algorithm squares the error with each iteration
+such that <span class="math">\(\epsilon_{i+1} = \epsilon_i^2\)</span>, doubling the amount of correct bits.</p>
+<p>Using <span class="math">\(a \log(b) = \log b^a\)</span>, (1) can be rewritten as:</p>
+<div class="math">
+\[
+\begin{align}
+\notag p_i &amp;= 2^i \lfloor\log_2 (1/\epsilon_0)\rfloor - 1 \\
+\notag p_i &amp;= \lfloor\log_2 (1/\epsilon_0^{2^i})\rfloor - 1
+\end{align}
+\]</div>
+<p>This leads to a general function for any <span class="math">\(\epsilon \gt 0\)</span>:</p>
+<div class="math">
+\[
+\tag{2} p = \lfloor\log_2 (1/\epsilon)\rfloor - 1
+\]</div>
+<p>The formula seems ok, but why?</p>
+<h2>Required Number of Bits</h2>
+<p>Let's look at some values <span class="math">\(v\)</span> and the required bit count <span class="math">\(c\)</span> to store them:</p>
+<table class="table">
+<thead>
+<tr>
+<th style="text-align: right;"><span class="math">\(v\)</span></th>
+<th style="text-align: right;">Binary</th>
+<th style="text-align: right;"><span class="math">\(c\)</span></th>
+<th style="text-align: right;"><span class="math">\(\log_2 v\)</span></th>
+<th> </th>
+<th style="text-align: right;"><span class="math">\(v\)</span></th>
+<th style="text-align: right;">Binary</th>
+<th style="text-align: right;"><span class="math">\(c\)</span></th>
+<th style="text-align: right;"><span class="math">\(\log_2 v\)</span></th>
+<th> </th>
+<th style="text-align: right;"><span class="math">\(v\)</span></th>
+<th style="text-align: right;">Binary</th>
+<th style="text-align: right;"><span class="math">\(c\)</span></th>
+<th style="text-align: right;"><span class="math">\(\log_2 v\)</span></th>
+<th> </th>
+<th style="text-align: right;"><span class="math">\(v\)</span></th>
+<th style="text-align: right;">Binary</th>
+<th style="text-align: right;"><span class="math">\(c\)</span></th>
+<th style="text-align: right;"><span class="math">\(\log_2 v\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"> </td>
+<td> </td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2.322</td>
+<td> </td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1010</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.322</td>
+<td> </td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">1111</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.907</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.000</td>
+<td> </td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2.585</td>
+<td> </td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">1011</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.459</td>
+<td> </td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">10000</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1.000</td>
+<td> </td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">111</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2.807</td>
+<td> </td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">1100</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.585</td>
+<td> </td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">10001</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4.087</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1.585</td>
+<td> </td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.000</td>
+<td> </td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">1101</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.700</td>
+<td> </td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">10010</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4.167</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2.000</td>
+<td> </td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1001</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.167</td>
+<td> </td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">1110</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3.807</td>
+<td> </td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">10011</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4.248</td>
+</tr>
+</tbody>
+</table>
+<p>As you may already know, the increase in the required amount of bits happens when the value
+<span class="math">\(v\)</span> is a power of two.</p>
+<p>Looking at the colums with the logarithms, the bit count <span class="math">\(c\)</span> can be calculated as:</p>
+<div class="math">
+\[
+\tag{3} c = \lfloor\log_2 v\rfloor + 1 \qquad\forall v \gt 0
+\]</div>
+<h2>Errors and Precision</h2>
+<p>Errors <span class="math">\(\epsilon\)</span> in approximation algorithms are usually given as fraction
+(with <span class="math">\(d \gt 0\)</span>):</p>
+<div class="math">
+\[
+\epsilon = 1 / d
+\]</div>
+<p>As an example, the initial error in the aforementioned algorithm is
+<span class="math">\(\epsilon_0 = \frac{1}{17}\)</span>.</p>
+<p>For a converging approximation algorithm, <span class="math">\(\epsilon_0 \lt 1\)</span> and therefore <span class="math">\(d_0 \gt 1\)</span>.
+After each iteration <span class="math">\(\epsilon_{i+1} \lt \epsilon_i\)</span> and therefore <span class="math">\(d_{i+1} \gt d_i\)</span>.</p>
+<p>For an <span class="math">\(N\)</span>-bit mantissa of any such algorithm, the worst-case absolute error <span class="math">\(\Epsilon\)</span> is</p>
+<div class="math">
+\[
+\begin{align}
+\notag \Epsilon &amp;= 2^N\epsilon \\
+\notag \Epsilon &amp;= \frac{2^N}{d}
+\end{align}
+\]</div>
+<p>Using (3) to calculate the number of incorrect bits <span class="math">\(q\)</span>:</p>
+<div class="math">
+\[
+\begin{align}
+\notag q &amp;= \lceil \log_2(E) \rceil \\
+\notag q &amp;= \bigg\lceil \log_2\bigg(\frac{2^N}{d}\bigg) \bigg\rceil \\
+\notag q &amp;= \lceil \log_2(2^N) - \log_2(d) \rceil \\
+\notag q &amp;= N - \lceil \log_2(d) \rceil \\
+\end{align}
+\]</div>
+<p>Being conservative, this can be rewritten as</p>
+<div class="math">
+\[
+q = N - \lfloor \log_2(d) \rfloor + 1 \\
+\]</div>
+<p>This gives the number of correct bits <span class="math">\(p\)</span> as</p>
+<div class="math">
+\[
+\begin{align}
+\notag p &amp;= N - q \\
+\notag p &amp;= N - (N - \lfloor \log_2(d) \rfloor + 1) \\
+\notag p &amp;= \lfloor \log_2(d) \rfloor - 1 \\
+\tag{4} p &amp;= \lfloor \log_2(1/\epsilon) \rfloor - 1
+\end{align}
+\]</div>
+<p>Now (4) is the same as (2). Q.E.D.</p>
+
+                </main>
+            </div>
+        </div>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <p>&copy; 2024-2025 The Fasciculus Project.</p>
+        </div>
+    </footer>
+</body>
+</html>
