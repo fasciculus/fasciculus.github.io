@@ -47,7 +47,7 @@
     </tr>
     <tr>
         <td>Version</td>
-        <td>2025-01-31</td>
+        <td>2025-02-01</td>
     </tr>
 </table>
 <div class="markdown-alert markdown-alert-warning alert alert-warning" role="alert">
@@ -405,8 +405,8 @@ of these values.</p>
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> Div(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ushort</span> DivUnsafe(<span class="keyword">ushort</span> lhs, <span class="keyword">ushort</span> rhs);
 </pre></div><h2>§A Division Algorithms</h2>
-<p>The division algorithms are implemented as a multiplication of the nominator <span class="math">\(n\)</span> with the
-reciprocal <span class="math">\(r\)</span> of the denominator <span class="math">\(d\)</span> to get the quotient <span class="math">\(q\)</span>:</p>
+<p>For <span class="math">\(N \gt 32\)</span> the division algorithms are implemented as a multiplication of the nominator
+<span class="math">\(n\)</span> with the reciprocal <span class="math">\(r\)</span> of the denominator <span class="math">\(d\)</span> to get the quotient <span class="math">\(q\)</span>:</p>
 <div class="math">
 \[
 \tag{A.1}
@@ -443,37 +443,17 @@ f'(r) = -1 / r^2= -r^{-2}
 <p>Starting from an initial estimate <span class="math">\(r_0\)</span>, a Newton iteration is given as:</p>
 <div class="math">
 \[
-\tag{A.2.3}
-r_{i+1} = r_i - \frac{f(r_i)}{f'(r_i)}
-\]</div>
-<p>Placing (A.2.1) and (A.2.2) into (A.2.3):</p>
-<div class="math">
-\[
-\tag{A.2.4}
-r_{i+1} = r_i - \frac{r^{-1} - d}{-r^{-2}}
-\]</div>
-<p>Eliminating the minus in the denominator by multiplying the fraction in (A.2.4) with <span class="math">\(-1\)</span>:</p>
-<div class="math">
-\[
-\tag{A.2.5}
-r_{i+1} = r_i + \frac{r^{-1} - d}{r^{-2}}
-\]</div>
-<p>Eliminating the denominator of the fraction in (A.2.5) by multiplying both the nominator and
-the denominator with <span class="math">\(r_i^2\)</span>:</p>
-<div class="math">
-\[
-\tag{A.2.6}
-r_{i+1} = r_i + r_i^2(r^{-1} - d)
-\]</div>
-<p>Eliminating the <span class="math">\(r^{-1}\)</span> in (A.2.6):</p>
-<div class="math">
-\[
 \begin{align}
-\tag{A.2.7}     r_{i+1} &amp;= r_i + r_i(1 - r_i d) \\
-\notag                  &amp;= r_i (2 - r_i d)
+\notag r_{i+1} &amp;= r_i - \frac{f(r_i)}{f'(r_i)} \\
+\notag r_{i+1} &amp;= r_i - \frac{r^{-1} - d}{-r^{-2}} \\
+\notag r_{i+1} &amp;= r_i + \frac{r^{-1} - d}{r^{-2}} \\
+\notag r_{i+1} &amp;= r_i + r_i^2(r^{-1} - d) \\
+\tag{A.2.3} r_{i+1} &amp;= r_i + r_i(1 - r_i d) \\
+\tag{A.2.4} r_{i+1} &amp;= r_i (2 - r_i d)
 \end{align}
 \]</div>
-<p>The resulting iteration step uses addition, subtraction and multiplication only.</p>
+<p>The resulting iteration step uses addition, subtraction and multiplication only. For
+comptational precision, (A.2.3) is preferred.</p>
 <p>Since <span class="math">\(d r = 1\)</span> and <span class="math">\(d r_i \approx 1\)</span> the error <span class="math">\(\epsilon_i\)</span> is defined as:</p>
 <div class="math">
 \[
@@ -503,8 +483,8 @@ d \in [0.5, 1.0]
 <div class="math">
 \[
 \begin{align}
-\notag    d_0 &amp;= 0.5 = 1/2 \\
-\notag    d_1 &amp;= 1
+\tag{A.3.1}    d_0 &amp;= 0.5 = 1/2 \\
+\tag{A.3.2}    d_1 &amp;= 1
 \end{align}
 \]</div>
 <p>The initial estimate <span class="math">\(r_0\)</span> is (second order Chebyshev polynomial):</p>
@@ -524,12 +504,12 @@ d \in [0.5, 1.0]
 <div class="math">
 \[
 \begin{align}
-\notag  \epsilon = f(d) &amp;= 1 - d(t_0 + d t_1) \\
-\notag                  &amp;= 1 - t_0 d - t_1 d^2 \\
-\notag            f'(d) &amp;= -t_0 - 2 t_1 d
+\tag{A.3.3}   f(d) &amp;= 1 - d(t_0 + d t_1) \\
+\tag{A.3.4}   f(d) &amp;= 1 - t_0 d - t_1 d^2 \\
+\notag        f'(d) &amp;= -t_0 - 2 t_1 d
 \end{align}
 \]</div>
-<p>To minimize the error <span class="math">\(|\epsilon_0|\)</span>, the local minimum of <span class="math">\(f(d)\)</span> is reuired.
+<p>To minimize the error <span class="math">\(|\epsilon_0|\)</span>, the local minimum of <span class="math">\(f(d)\)</span> is required.
 It occurs at <span class="math">\(f'(d) = 0\)</span>. Solving for d:</p>
 <div class="math">
 \[
@@ -537,19 +517,19 @@ It occurs at <span class="math">\(f'(d) = 0\)</span>. Solving for d:</p>
 \notag           f'(d) &amp;= 0 \\
 \notag  -t_0 - 2 t_1 d &amp;= 0 \\
 \notag        -2 t_1 d &amp;= t_0 \\
-\notag               d &amp;= - \frac{t_0}{2 t_1}
+\tag{A.3.5}          d &amp;= - \frac{t_0}{2 t_1}
 \end{align}
 \]</div>
 <p>Applying the Chebyshev equioscillation theorem gives the equations:</p>
 <div class="math">
 \[
 \begin{align}
-\notag  f(d_0) &amp;= f(d_1) \\
-\notag  f(d_0) &amp;= -f(d) \\
-\notag  f(d_1) &amp;= -f(d)
+\tag{A.3.6}  f(d_0) &amp;= f(d_1) \\
+\notag       f(d_0) &amp;= -f(d) \\
+\tag{A.3.7}  f(d_1) &amp;= -f(d)
 \end{align}
 \]</div>
-<p>Using (A3.?) to solve for <span class="math">\(t_1\)</span>:</p>
+<p>Using (A.3.6) with (A.3.4) to solve for <span class="math">\(t_1\)</span>:</p>
 <div class="math">
 \[
 \begin{align}
@@ -560,20 +540,20 @@ It occurs at <span class="math">\(f'(d) = 0\)</span>. Solving for d:</p>
 \notag  - 2 t_0 - t_1 &amp;= - 4 t_0 - 4 t_1 \\
 \notag  - t_1 &amp;= - 2 t_0 - 4 t_1 \\
 \notag  3 t_1 &amp;= - 2 t_0 \\
-\notag  t_1 &amp;= - \frac{2}{3} t_0
+\tag{A.3.8}  t_1 &amp;= - \frac{2}{3} t_0
 \end{align}
 \]</div>
-<p>Replacing:</p>
+<p>Using (A.3.8) with (A.3.3) to define <span class="math">\(f(d_1)\)</span>:</p>
 <div class="math">
 \[
 \begin{align}
-\notag  f(d_1) &amp;= 1 - d_1(t_0 + d_1 t_1) \\
-\notag  f(d_1) &amp;= 1 - (t_0 + t_1) \\
-\notag  f(d_1) &amp;= 1 - \bigg(t_0 - \frac{2}{3} t_0\bigg) \\
-\notag  f(d_1) &amp;= 1 - \frac{1}{3} t_0
+\notag       f(d_1) &amp;= 1 - d_1(t_0 + d_1 t_1) \\
+\notag       f(d_1) &amp;= 1 - (t_0 + t_1) \\
+\notag       f(d_1) &amp;= 1 - \bigg(t_0 - \frac{2}{3} t_0\bigg) \\
+\tag{A.3.9}  f(d_1) &amp;= 1 - \frac{1}{3} t_0
 \end{align}
 \]</div>
-<p>Replacing:</p>
+<p>Using (A.3.5) and (A.3.8) to redefine (A.3.4):</p>
 <div class="math">
 \[
 \begin{align}
@@ -584,10 +564,10 @@ It occurs at <span class="math">\(f'(d) = 0\)</span>. Solving for d:</p>
 \notag  f(d) &amp;= 1 - \bigg(\frac{t_0}{\frac{4}{3}}\bigg) + \frac{2}{3} t_0 \bigg(\frac{1}{\frac{4}{3}}\bigg)^2 \\
 \notag  f(d) &amp;= 1 - \frac{3}{4}t_0 + \frac{2}{3} t_0 \bigg(\frac{1}{\frac{16}{9}}\bigg) \\
 \notag  f(d) &amp;= 1 - \frac{36}{48}t_0 + \frac{18}{48} t_0 \\
-\notag  f(d) &amp;= 1 - \frac{9}{24}t_0  \\
+\tag{A.3.10}  f(d) &amp;= 1 - \frac{9}{24}t_0  \\
 \end{align}
 \]</div>
-<p>Using:</p>
+<p>Using (A.3.7) with (A.3.9) and (A.3.10) to solve for <span class="math">\(t_1\)</span>:</p>
 <div class="math">
 \[
 \begin{align}
@@ -599,7 +579,24 @@ It occurs at <span class="math">\(f'(d) = 0\)</span>. Solving for d:</p>
 \notag   t_0 &amp;= \frac{48}{17} \\
 \notag   t_1 &amp;= - \frac{2}{3} t_0 \\
 \notag   t_1 &amp;= - \frac{2}{3} \frac{48}{17} \\
-\notag   t_1 &amp;= - \frac{32}{17} \\
+\tag{A.3.11}   t_1 &amp;= - \frac{32}{17} \\
+\end{align}
+\]</div>
+<p>Using (A.3.8) and (A.3.11) to solve for <span class="math">\(t_0\)</span>:</p>
+<div class="math">
+\[
+\begin{align}
+\notag - \frac{2}{3} t_0 &amp;= t_1 \\
+\notag - \frac{2}{3} t_0 &amp;= - \frac{32}{17} \\
+\tag{A.3.12} t_0 &amp;= \frac{96}{34} = \frac{48}{17} \\
+\end{align}
+\]</div>
+<p>The resulting initial estimate is therefore:</p>
+<div class="math">
+\[
+\begin{align}
+\notag r_0 &amp;= t_0 + t_1 d \\
+\tag{A.3.13} r_0 &amp;= \frac{48}{17} - \frac{32}{17} d
 \end{align}
 \]</div>
 <h3>§A.4 Required Newton Iterations</h3>
@@ -614,15 +611,17 @@ It occurs at <span class="math">\(f'(d) = 0\)</span>. Solving for d:</p>
 \notag  |\epsilon_0| &amp;= \frac{1}{17} \\
 \end{align}
 \]</div>
-<p>The precision <span class="math">\(p\)</span> (binary digits of reciprocal accuracy) after <span class="math">\(i\)</span> iterations is:</p>
+<p>The number of bits affected (precise) at an error <span class="math">\(\epsilon\)</span> is:</p>
 <div class="math">
 \[
-p = -2^i \log_2 \epsilon_0 - 1
+p = \lfloor - log_2 \epsilon \rfloor - 1
 \]</div>
+<p>This gives the following precisions <span class="math">\(p\)</span> after <span class="math">\(i\)</span> Newton iterations:</p>
 <table class="table">
 <thead>
 <tr>
 <th><span class="math">\(i\)</span></th>
+<th><span class="math">\(\epsilon\)</span></th>
 <th style="text-align: right;"><span class="math">\(p\)</span></th>
 <th>Satisfies</th>
 </tr>
@@ -630,31 +629,44 @@ p = -2^i \log_2 \epsilon_0 - 1
 <tbody>
 <tr>
 <td>0</td>
-<td style="text-align: right;">3.08</td>
+<td><span class="math">\(17^{-1}\)</span></td>
+<td style="text-align: right;">3</td>
 <td></td>
 </tr>
 <tr>
 <td>1</td>
-<td style="text-align: right;">7.17</td>
+<td><span class="math">\(17^{-2}\)</span></td>
+<td style="text-align: right;">7</td>
 <td>FP8</td>
 </tr>
 <tr>
 <td>2</td>
-<td style="text-align: right;">15.35</td>
+<td><span class="math">\(17^{-4}\)</span></td>
+<td style="text-align: right;">15</td>
 <td>FP16</td>
 </tr>
 <tr>
 <td>3</td>
-<td style="text-align: right;">31.70</td>
-<td>FP32</td>
+<td><span class="math">\(17^{-8}\)</span></td>
+<td style="text-align: right;">31</td>
+<td>FP32, <code>float</code></td>
 </tr>
 <tr>
 <td>4</td>
-<td style="text-align: right;">64.40</td>
-<td>FP64</td>
+<td><span class="math">\(17^{-16}\)</span></td>
+<td style="text-align: right;">64</td>
+<td>FP64, <code>double</code></td>
 </tr>
 </tbody>
 </table>
+<p>Using a third-order Chebyshev polynomial for <span class="math">\(r_0\)</span>:</p>
+<div class="math">
+\[
+r_0 = t_0 + t_1 d + t_2 d^2
+\]</div>
+<p>which has an <span class="math">\(\epsilon_0\)</span> of <span class="math">\(1/99\)</span> doesn't reduce the number of iterations as <span class="math">\(p\)</span> is
+<span class="math">\(52\)</span> for <span class="math">\(i = 3\)</span>. That may satisfy <code>double</code> (52 bit mantissa) but not
+<code>FP64</code> (62 bit mantissa).</p>
 
                 </main>
             </div>
