@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/lib/katex/katex.min.css" />
         <script defer src="/lib/katex/katex.min.js"></script>
         <script defer src="/lib/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
-    <link rel="stylesheet" href="/css/fasciculus2.css" />
+    <link rel="stylesheet" href="/css/fasciculus3.css" />
 </head>
 <body>
     <header>
@@ -280,11 +280,12 @@ After each iteration <span class="math">\(\epsilon_{i+1} \lt \epsilon_i\)</span>
 \notag q &amp;= N - \lceil \log_2(d) \rceil \\
 \end{align}
 \]</div>
-<p>Being conservative, this can be rewritten as</p>
+<p>Being conservative*, this can be rewritten as</p>
 <div class="math">
 \[
 q = N - \lfloor \log_2(d) \rfloor + 1 \\
 \]</div>
+<p>* <span class="math">\(q\)</span> is too large by 1, if <span class="math">\(d\)</span> is a power of 2.</p>
 <p>This gives the number of correct bits <span class="math">\(p\)</span> as</p>
 <div class="math">
 \[
