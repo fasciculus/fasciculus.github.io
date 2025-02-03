@@ -3,8 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2025 (2) | Fasciculus</title>
+    <title>Valid HTML Tags | Fasciculus</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/katex/katex.min.css" />
+        <script defer src="/lib/katex/katex.min.js"></script>
+        <script defer src="/lib/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
     <link rel="stylesheet" href="/css/fasciculus3.css" />
 </head>
 <body>
@@ -41,7 +44,7 @@
             <summary>2025 (2)</summary>
             <ul>
                     <li>
-        <details >
+        <details open>
             <summary>February (2)</summary>
             <ul>
                     <li>
@@ -65,8 +68,49 @@
             <div class="col">
                 <main role="main" class="pb-3">
                         
-                    <h1>2025 (2)</h1>
+                    <h1>Valid HTML Tags</h1>
+<table class="fsc-frontmatter">
+  <tbody>
+    <tr>
+      <td>Published:</td>
+      <td>2025-02-03</td>
+    </tr>
+    <tr>
+      <td>Author:</td>
+      <td>Roger H. Jörg</td>
+    </tr>
+  </tbody>
+</table>
+<p>I am writing a library to create the API documentation of this site directly from
+the source code.</p>
+<p>The XML documentation in the source code contains elements specific to this type of
+documentation (e.g. <code>summary</code> or <code>paramref</code>) as well as HTML elements.</p>
+<p>To make sure I captured all XML documentation specific elements (or at least those I use
+in my comments), the library keeps track of the handled elements and the elements
+actually used.</p>
+<p>Obviously valid HTML elements are automagically &quot;handled&quot;. But where to get a list of
+these?</p>
+<p>I'm using the <a href="https://github.com/zzzprojects/html-agility-pack/">HtmlAgilityPack</a> (also known as &quot;HAP&quot;) to manipulate HTML docoments,
+but could not find a list of tag names in there.</p>
+<p>Since I plan to add some additional HTML functionality anyway, I set up a mini-project
+and added the constants <a href="https://github.com/fasciculus/fasciculus/blob/main/source/Fasciculus.Html/HtmlConstants.cs">therein</a>, using this <a href="https://www.w3schools.com/tags/default.asp">HTML Element Reference</a>.</p>
+<p>Whilst compiling the list, I realized that <code>&lt;list&gt;</code>, <code>&lt;item&gt;</code> and <code>&lt;c&gt;</code> are
+XML documentation specific and not valid HTML. I replaced <code>&lt;list&gt;</code> and <code>&lt;item&gt;</code> with
+<code>&lt;ul&gt;</code> and <code>&lt;li&gt;</code> respectively in the source code where they occurred. The <code>&lt;c&gt;</code> elements
+get converted to <code>code</code> elements in the documentation parser.</p>
 
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+                <a href="/blog/2025/02/BinaryPrecision.html">Previous Entry</a>
+                <h6>Binary Precision in Approximation Algorithms</h6>
+                <p>2025-02-01<br />How many bits are precise in a fixed point approximation algorithm.</p>
+        </div>
+        <div class="col text-end">
+        </div>
+    </div>
+</div>
                 </main>
             </div>
         </div>
