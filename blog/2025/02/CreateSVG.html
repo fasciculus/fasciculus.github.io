@@ -73,17 +73,15 @@
                 <main role="main" class="pb-3">
                         
                     <h1>Programmatically Create SVG</h1>
-<table class="fsc-frontmatter">
-  <tbody>
-    <tr>
-      <td>Published:</td>
-      <td>2025-02-05</td>
-    </tr>
-    <tr>
-      <td>Author:</td>
-      <td>Roger H. Jörg</td>
-    </tr>
-  </tbody>
+<table class="frontmatter">
+  <tr>
+    <td class="frontmatter-label">Author</td>
+    <td class="frontmatter-content">Roger H. Jörg</td>
+  </tr>
+  <tr>
+    <td class="frontmatter-label">Published</td>
+    <td class="frontmatter-content">2025-02-05</td>
+  </tr>
 </table>
 <p>I am not good at manually painting graphics. Neither do I like using graphics editors
 to create them. The result is usually not precise enough for my &quot;gusto&quot;.</p>
@@ -149,8 +147,8 @@ types.</p>
 <p>allowing me to get the (four) values out of the <code>viewBox</code> attribute.</p>
 <h2>Fasciculus.Svg</h2>
 <p>With the above out of the way, I started the Fasciculus.Svg project. As of this
-writing, <code>SvgSvg</code> (the <code>svg</code> element) and <code>ScgRect</code> are implemented only. They both
-come with their associated &quot;builder&quot; allowing fluent creation.</p>
+writing, <code>SvgSvg</code> (the <code>svg</code> element) and <code>SvgRect</code> (the <code>rect</code> element) are somewhat implemented.
+They both come with their associated &quot;builders&quot; allowing fluent creation.</p>
 <p>The code</p>
 <div class="csharp"><pre>
 SvgSvg svg = SvgSvg.Create(<span class="number">0</span>, <span class="number">0</span>, <span class="number">160</span>, <span class="number">80</span>).Width(<span class="string">&quot;16rem&quot;</span>).Height(<span class="string">&quot;8rem&quot;</span>);
@@ -175,7 +173,7 @@ Console.WriteLine(svg.ToString());
 <p>Visual Studio Code shows a preview, if Simon Siefke's &quot;Svg Preview&quot; extension is installed,
 even without the <code>xmlns</code> attribute. When embedding SVG into HTML documents, the attribute
 isn't required neither, but it doesn't hurt.</p>
-<p>I had some difficulties setting this attribute until I stumbled over Microsot's
+<p>I had some difficulties setting this attribute until I stumbled over Microsoft's
 <a href="https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-xml-linq-xnamespace#create-a-default-namespace">article</a> describing how to do it.</p>
 
 
