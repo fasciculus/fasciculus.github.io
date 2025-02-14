@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Fuzzy String Desaster | Fasciculus</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/katex/katex.min.css" />
+        <script defer src="/lib/katex/katex.min.js"></script>
+        <script defer src="/lib/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <link rel="stylesheet" href="/css/fasciculus.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="row fsc-navbar">
+                <div class="col fsc-navbar-left">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/"><img class="fsc-logo" src="/images/fasciculus.png" /></a></li>
+                        <li class="nav-item"><a class="nav-link" href="/blog/">Blog</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/concepts/">Concepts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/specifications/">Specifications</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/api/">APIs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/releases.html">Releases</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/licenses/">Licenses</a></li>
+                    </ul>
+                </div>
+                <div class="col fsc-navbar-right">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/privacy.html">Privacy</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://github.com/fasciculus/fasciculus/"><img src="/images/github-32.png" alt="View on GitHub" /></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="row">
+                <div class="col fsc-navigation-forest">
+                    <ul class="fsc-navigation-forest">
+        <li>
+        <details open>
+            <summary>2025 (4)</summary>
+            <ul>
+                    <li>
+        <details open>
+            <summary>February (4)</summary>
+            <ul>
+                    <li>
+        <a href="/blog/2025/02/FuzzyStringDesaster.html">The Fuzzy String Desaster</a>
+</li>
+
+                    <li>
+        <a href="/blog/2025/02/CreateSVG.html">Programmatically Create SVG</a>
+</li>
+
+                    <li>
+        <a href="/blog/2025/02/ValidHtmlTags.html">Valid HTML Tags</a>
+</li>
+
+                    <li>
+        <a href="/blog/2025/02/BinaryPrecision.html">Binary Precision in Approximation Algorithms</a>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+</ul>
+                </div>
+            <div class="col">
+                <main role="main" class="pb-3">
+                        
+                    <h1>The Fuzzy String Desaster</h1>
+<table class="frontmatter">
+  <tr>
+    <td class="frontmatter-label">Author</td>
+    <td class="frontmatter-content">Roger H. Jörg</td>
+  </tr>
+  <tr>
+    <td class="frontmatter-label">Published</td>
+    <td class="frontmatter-content">2025-02-14</td>
+  </tr>
+</table>
+<p>... or where creating fuzzy strings blow into my face.</p>
+<h2>Motivation</h2>
+<p>While researching possibilities to create a future search engine or auto-completion feature, I
+stumbled over fuzzyness of strings.</p>
+<h2>Edit Distance</h2>
+<p>The edit distance between two strings is defined as the number of single-character edits
+(insertions, deletions or replacements) required to transform one string into the other.</p>
+<p>Some examples:</p>
+<table class="table">
+<thead>
+<tr>
+<th>First String</th>
+<th>Second String</th>
+<th>Edits</th>
+<th style="text-align: center;">Edit Distance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&quot;ab&quot;</code></td>
+<td><code>&quot;acb&quot;</code></td>
+<td>insert <code>c</code></td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td><code>&quot;axe&quot;</code></td>
+<td><code>&quot;aeg&quot;</code></td>
+<td>remove <code>x</code>, insert <code>g</code></td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td><code>&quot;Hello&quot;</code></td>
+<td><code>&quot;hello&quot;</code></td>
+<td>replace <code>H</code> with <code>h</code></td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td><code>&quot;nada&quot;</code></td>
+<td><code>&quot;nada&quot;</code></td>
+<td></td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Given a list of possible entries for some auto-completion, the edit distance between the typed-in
+text and any entry in the list may control the order of the proposed completions: the lower the
+edit distance, the higher up the proposal.</p>
+<h2>Fuzzy Strings</h2>
+<p>Now this is somewhat the reverse of the edit distance. Given some arbitrary <code>start</code> string and
+some maximum edit distance <code>maxDistance</code> we create all strings (the fuzzy strings) that have an edit
+distance up to the required maximum.</p>
+<p>Removing characters from <code>start</code> is easy. The number of created fuzzy strings is proportional
+to the number of characters in <code>start</code> and may even be 0, if <code>start</code> is the empty string.</p>
+<p>Insertions and replacements are a whole new ballgame.</p>
+<p>C# (as well as most modern programming languages) works with 16-bit Unicode characters. There
+are some of them (up to <span class="math">\(2^{16} = 65536\)</span>). So even a short <code>start</code> like <code>&quot;ab&quot;</code> creates more
+than 300K fuzzy strings at an edit distance of 1.</p>
+<p>In an attempt to drastically reduce this large number, I had the following idea:</p>
+<ul>
+<li>Convert the <code>start</code> string into a byte array <code>startBytes</code> (using UTF8).</li>
+<li>Create fuzzy byte arrays from <code>startBytes</code></li>
+<li>Try to convert these fuzzy byte arrays back into strings (again using UTF8). Not all byte
+arrays are valid UTF8 strings.</li>
+</ul>
+<h2>Fuzzy Byte Arrays (<code>FuzzyBytes</code>)</h2>
+<p>The edit distance between two byte arrays can be defined the same as the edit distance between two
+strings, but on a byte-level instead of a character-level.</p>
+<p>Creating <code>FuzzyBytes</code> from a given start array <code>startBytes</code> works the same as creating
+fuzzy strings, but now with just 256 possible values for insertions or replacements.</p>
+<p>Again, the removal operation creates <code>FuzzyBytes</code> proportional to the length of <code>startBytes</code>.</p>
+<p>The insertion operation creates <span class="math">\(256 (n + 1)\)</span>, the replacement operation <span class="math">\(256 n - 1\)</span> <code>FuzzyBytes</code> at
+an edit distance of 1 where <span class="math">\(n\)</span> is the length of <code>startBytes</code>.</p>
+<p>Still, the number of created <code>FuzzyBytes</code> grows exponentially with <code>maxDistance</code>. The number
+of created <code>FuzzyBytes</code> is 65792 with an empty <code>startBytes</code> array and a <code>maxDistance</code> of 2.</p>
+<h2>Fuzzy Strings (Continued)</h2>
+<p>Now using <code>FuzzyBytes</code> I created fuzzy strings. Well, I tried to do so.</p>
+<div class="csharp"><pre>
+FuzzyString.Generate(start: <span class="string">&quot;Hello, world!&quot;</span>, maxDistance: <span class="number">1</span>, ignoreCase: <span class="keyword">true</span>);
+</pre></div>
+<p>returned 2011 fuzzy strings. Setting <code>maxDistance</code> to 2 took more time than my patience allowed for.
+I stopped the process after a few minutes.</p>
+<h2>Conclusion</h2>
+<p>Given that a list of proposals may have thousands of entries and waiting tens of thousands of minutes
+to create all the fuzzy strings is definively a DESASTER.</p>
+<p>Maybe such fuzzy strings can be created using some kind of rule sets according to typical typos.
+Where to get such rule sets? What about multi-language support?</p>
+
+
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+                <a href="/blog/2025/02/CreateSVG.html">Previous Entry</a>
+                <h6>Programmatically Create SVG</h6>
+                <p>2025-02-05<br />How to programmatically create SVG files with C#</p>
+        </div>
+        <div class="col text-end">
+        </div>
+    </div>
+</div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <p>&copy; 2024-2025 The Fasciculus Project.</p>
+        </div>
+    </footer>
+</body>
+</html>
