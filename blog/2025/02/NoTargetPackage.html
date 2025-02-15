@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Source-Only Package | Fasciculus</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/katex/katex.min.css" />
+        <script defer src="/lib/katex/katex.min.js"></script>
+        <script defer src="/lib/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <link rel="stylesheet" href="/css/fasciculus.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="row fsc-navbar">
+                <div class="col fsc-navbar-left">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/"><img class="fsc-logo" src="/images/fasciculus.png" /></a></li>
+                        <li class="nav-item"><a class="nav-link" href="/blog/">Blog</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/concepts/">Concepts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/specifications/">Specifications</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/api/">APIs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/releases.html">Releases</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/licenses/">Licenses</a></li>
+                    </ul>
+                </div>
+                <div class="col fsc-navbar-right">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/privacy.html">Privacy</a></li>
+                        <li class="nav-item"><a class="nav-link" href="https://github.com/fasciculus/fasciculus/"><img src="/images/github-32.png" alt="View on GitHub" /></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="row">
+                <div class="col fsc-navigation-forest">
+                    <ul class="fsc-navigation-forest">
+        <li>
+        <details open>
+            <summary>2025 (5)</summary>
+            <ul>
+                    <li>
+        <details open>
+            <summary>February (5)</summary>
+            <ul>
+                    <li>
+        <a href="/blog/2025/02/NoTargetPackage.html">Source-Only Package</a>
+</li>
+
+                    <li>
+        <a href="/blog/2025/02/FuzzyStringDesaster.html">The Fuzzy String Desaster</a>
+</li>
+
+                    <li>
+        <a href="/blog/2025/02/CreateSVG.html">Programmatically Create SVG</a>
+</li>
+
+                    <li>
+        <a href="/blog/2025/02/ValidHtmlTags.html">Valid HTML Tags</a>
+</li>
+
+                    <li>
+        <a href="/blog/2025/02/BinaryPrecision.html">Binary Precision in Approximation Algorithms</a>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+            </ul>
+        </details>
+</li>
+
+</ul>
+                </div>
+            <div class="col">
+                <main role="main" class="pb-3">
+                        
+                    <h1>Source-Only Package with Microsoft.Build.NoTargets</h1>
+<table class="frontmatter">
+  <tr>
+    <td class="frontmatter-label">Author</td>
+    <td class="frontmatter-content">Roger H. Jörg</td>
+  </tr>
+  <tr>
+    <td class="frontmatter-label">Published</td>
+    <td class="frontmatter-content">2025-02-15</td>
+  </tr>
+</table>
+<h2>Introduction</h2>
+<p>It is a niche case, but some  NuGet packages do not contain an actual library or executable.
+These packages just may contain build scripts (<code>.props</code> and/or <code>.targets</code> files in the <code>build</code>
+directory) and/or content files (in the <code>contentFiles</code> directory). Packages of this type are
+called &quot;source-only&quot; packages.</p>
+<h2>How-To</h2>
+<h3>Adjust the Project SDK</h3>
+<p>Microsoft provides an SDK for this type of packages. It is called <code>Microsoft.Build.NoTargets</code>.
+This works only for C# and F# projects. To use it in a C# project, you just change the SDK in your
+<code>.csproj</code> file from</p>
+<div class="xml"><pre>
+<span class="xmlDelimiter">&lt;</span><span class="xmlName">Project</span> <span class="xmlAttribute">Sdk</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">Microsoft.NET.Sdk</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlDelimiter">&gt;</span>
+</pre></div>
+<p>to</p>
+<div class="xml"><pre>
+<span class="xmlDelimiter">&lt;</span><span class="xmlName">Project</span> <span class="xmlAttribute">Sdk</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">Microsoft.Build.NoTargets</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlDelimiter">&gt;</span>
+</pre></div>
+<p>Building this with <code>GeneratePackageOnBuild</code> set to <code>true</code> will get you a bunch of errors.</p>
+<h3>Adjust <code>global.json</code></h3>
+<p>The above doesn't work because MSBuild doesn't know which version of the SDK to use.</p>
+<p>Usually you would just write</p>
+<div class="xml"><pre>
+<span class="xmlDelimiter">&lt;</span><span class="xmlName">Project</span> <span class="xmlAttribute">Sdk</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">Microsoft.Build.NoTargets/3.7.56</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlDelimiter">&gt;</span>
+</pre></div>
+<p>to use version <code>3.7.56</code> of the SDK. Updating this may get forgotten as time goes by. A more elegant
+way is to modify <code>global.json</code> (you have one sitting at the root of your projects just next to
+your solution file, right?). As of this writing, mine looks like this:</p>
+<div class="json"><pre>
+{
+  <span class="jsonKey">&quot;sdk&quot;</span>: {
+    <span class="jsonKey">&quot;version&quot;</span>: <span class="jsonString">&quot;9.0.200&quot;</span>,
+    <span class="jsonKey">&quot;rollForward&quot;</span>: <span class="jsonString">&quot;latestFeature&quot;</span>,
+    <span class="jsonKey">&quot;allowPrerelease&quot;</span>: <span class="jsonConst">false</span>
+  },
+  <span class="jsonKey">&quot;msbuild-sdks&quot;</span>: {
+    <span class="jsonKey">&quot;Microsoft.Build.NoTargets&quot;</span>: <span class="jsonString">&quot;3.7.56&quot;</span>
+  }
+}
+</pre></div>
+<p>Building the project still gives errors.</p>
+<h3>Add content</h3>
+<p>A package without content makes no sense. So let's add some in the <code>.csproj</code> file:</p>
+<div class="xml"><pre>
+  <span class="xmlDelimiter">&lt;</span><span class="xmlName">ItemGroup</span><span class="xmlDelimiter">&gt;</span>
+    <span class="xmlDelimiter">&lt;</span><span class="xmlName">None</span> <span class="xmlAttribute">Include</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">README.md</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlAttribute">Pack</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">true</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlAttribute">PackagePath</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">/</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlDelimiter">/&gt;</span>
+    <span class="xmlDelimiter">&lt;</span><span class="xmlName">None</span> <span class="xmlAttribute">Include</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">Properties/Aweful.Library.png</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlAttribute">Pack</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">true</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlAttribute">PackagePath</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">/</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlDelimiter">/&gt;</span>
+    <span class="xmlDelimiter">&lt;</span><span class="xmlName">None</span> <span class="xmlAttribute">Include</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">Build/Aweful.Library.props</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlAttribute">Pack</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">true</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlAttribute">PackagePath</span><span class="xmlDelimiter">=</span><span class="xmlAttributeQuotes">&quot;</span><span class="xmlAttributeValue">/build</span><span class="xmlAttributeQuotes">&quot;</span> <span class="xmlDelimiter">/&gt;</span>
+  <span class="xmlDelimiter">&lt;/</span><span class="xmlName">ItemGroup</span><span class="xmlDelimiter">&gt;</span>
+</pre></div>
+<p>Building the project still gives errors.</p>
+<h3>Add Essential Properties</h3>
+<p>Besides all the properties you usually set to create a package (<code>Deterministic</code>, <code>DebugType</code>,
+<code>IncludeSymbols</code>, <code>ContinuousIntegrationBuild</code>, <code>EmbedUntrackedSources</code>, <code>PublishRepositoryUrl</code>,
+<code>SymbolPackageFormat</code>, <code>Version</code>, <code>Authors</code>, <code>Company</code>, <code>Copyright</code>, <code>PackageLicenseExpression</code>,
+<code>PackageReleaseNotes</code>, ...?), the following must be set:</p>
+<div class="xml"><pre>
+<span class="xmlDelimiter">&lt;</span><span class="xmlName">PropertyGroup</span><span class="xmlDelimiter">&gt;</span>
+  <span class="xmlDelimiter">&lt;</span><span class="xmlName">IncludeSymbols</span><span class="xmlDelimiter">&gt;</span>false<span class="xmlDelimiter">&lt;/</span><span class="xmlName">IncludeSymbols</span><span class="xmlDelimiter">&gt;</span>
+  <span class="xmlDelimiter">&lt;</span><span class="xmlName">SuppressDependenciesWhenPacking</span><span class="xmlDelimiter">&gt;</span>true<span class="xmlDelimiter">&lt;/</span><span class="xmlName">SuppressDependenciesWhenPacking</span><span class="xmlDelimiter">&gt;</span>
+<span class="xmlDelimiter">&lt;/</span><span class="xmlName">PropertyGroup</span><span class="xmlDelimiter">&gt;</span>
+</pre></div>
+<p>And voilà, the project gets packed.</p>
+
+
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+                <a href="/blog/2025/02/FuzzyStringDesaster.html">Previous Entry</a>
+                <h6>The Fuzzy String Desaster</h6>
+                <p>2025-02-14<br />Where creating fuzzy strings blow into my face.</p>
+        </div>
+        <div class="col text-end">
+        </div>
+    </div>
+</div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <p>&copy; 2024-2025 The Fasciculus Project.</p>
+        </div>
+    </footer>
+</body>
+</html>
