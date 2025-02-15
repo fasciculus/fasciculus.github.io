@@ -152,6 +152,12 @@ your solution file, right?). As of this writing, mine looks like this:</p>
   <span class="xmlDelimiter">&lt;</span><span class="xmlName">SuppressDependenciesWhenPacking</span><span class="xmlDelimiter">&gt;</span>true<span class="xmlDelimiter">&lt;/</span><span class="xmlName">SuppressDependenciesWhenPacking</span><span class="xmlDelimiter">&gt;</span>
 <span class="xmlDelimiter">&lt;/</span><span class="xmlName">PropertyGroup</span><span class="xmlDelimiter">&gt;</span>
 </pre></div>
+<p>In addition, the following property should be set to not propagate the dependency to the project.</p>
+<div class="xml"><pre>
+<span class="xmlDelimiter">&lt;</span><span class="xmlName">PropertyGroup</span><span class="xmlDelimiter">&gt;</span>
+  <span class="xmlDelimiter">&lt;</span><span class="xmlName">DevelopmentDependency</span><span class="xmlDelimiter">&gt;</span>true<span class="xmlDelimiter">&lt;/</span><span class="xmlName">DevelopmentDependency</span><span class="xmlDelimiter">&gt;</span>
+<span class="xmlDelimiter">&lt;/</span><span class="xmlName">PropertyGroup</span><span class="xmlDelimiter">&gt;</span>
+</pre></div>
 <p>And voilà, the project gets packed.</p>
 
 
